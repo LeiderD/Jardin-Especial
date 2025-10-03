@@ -1,0 +1,197 @@
+/* Jardín Interactivo de Flores - Estilos CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+.container {
+    text-align: center;
+    z-index: 1;
+    max-width: 900px;
+    padding: 20px;
+}
+
+h1 {
+    color: white;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    animation: fadeIn 1s ease-in;
+}
+
+.subtitle {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    animation: fadeIn 1.5s ease-in;
+}
+
+.garden {
+    position: relative;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 40px;
+    min-height: 400px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+.flower {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    animation: growFlower 0.6s ease-out;
+}
+
+.flower:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+@keyframes growFlower {
+    0% { transform: scale(0) translateY(20px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.petal {
+    width: 30px;
+    height: 40px;
+    border-radius: 50% 50% 50% 0;
+    position: absolute;
+    transform-origin: bottom left;
+}
+
+.stem {
+    width: 4px;
+    height: 60px;
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 100%);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.leaf {
+    width: 20px;
+    height: 12px;
+    background: #4ade80;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.message-box {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    max-width: 80%;
+    z-index: 100;
+    animation: popIn 0.5s ease-out forwards;
+}
+
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.message-text {
+    color: #764ba2;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.close-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.close-btn:hover {
+    transform: scale(1.05);
+}
+
+.instruction {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1em;
+    margin-top: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); opacity: 1; }
+    50% { transform: translateY(-100px) translateX(20px); opacity: 0; }
+}
+
+.counter {
+    color: white;
+    font-size: 1.1em;
+    margin-top: 20px;
+    font-weight: 600;
+}

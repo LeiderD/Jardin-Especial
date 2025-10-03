@@ -1,0 +1,658 @@
+/* Jardín Interactivo de Flores - Estilos CSS Mejorados v2.0 */
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --accent-color: #ff6b9d;
+    --text-color: #ffffff;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-heavy: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    color: var(--text-color);
+}
+
+/* Estrellas mejoradas con más variedad */
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%);
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { 
+        opacity: 0.3; 
+        transform: scale(1) rotate(0deg); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.2) rotate(180deg); 
+    }
+}
+
+/* Contenedor principal mejorado */
+.container {
+    text-align: center;
+    z-index: 1;
+    max-width: 1000px;
+    padding: 20px;
+    position: relative;
+}
+
+h1 {
+    color: var(--text-color);
+    font-size: clamp(2em, 5vw, 3em);
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 20px rgba(0,0,0,0.5);
+    animation: fadeIn 1s ease-in, glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 2px 2px 20px rgba(0,0,0,0.5); }
+    to { text-shadow: 2px 2px 30px rgba(255,255,255,0.3), 0 0 40px var(--accent-color); }
+}
+
+.subtitle {
+    color: rgba(255,255,255,0.9);
+    font-size: clamp(1em, 3vw, 1.3em);
+    margin-bottom: 30px;
+    animation: fadeIn 1.5s ease-in;
+}
+
+/* Jardín mejorado con efectos glassmorphism */
+.garden {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 30px;
+    padding: 40px;
+    min-height: 450px;
+    box-shadow: var(--shadow-heavy);
+    border: 2px solid var(--glass-border);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.garden:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+}
+
+/* Sistema de flores mejorado */
+.flower {
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: growFlower 0.6s ease-out;
+    z-index: 2;
+}
+
+.flower:hover {
+    transform: scale(1.15) rotate(5deg);
+    filter: brightness(1.2) saturate(1.3);
+    z-index: 10;
+}
+
+.flower.blossoming {
+    animation: blossom 1s ease-in-out;
+}
+
+@keyframes blossom {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.2) rotate(-5deg); }
+    50% { transform: scale(1.3) rotate(5deg); }
+    75% { transform: scale(1.2) rotate(-2deg); }
+}
+
+@keyframes growFlower {
+    0% { 
+        transform: scale(0) translateY(30px) rotate(-180deg); 
+        opacity: 0; 
+    }
+    50% {
+        transform: scale(0.8) translateY(-10px) rotate(-90deg);
+        opacity: 0.7;
+    }
+    100% { 
+        transform: scale(1) translateY(0) rotate(0deg); 
+        opacity: 1; 
+    }
+}
+
+/* Tipos específicos de flores */
+.flower-rosa .petal {
+    border-radius: 60% 40% 60% 40%;
+}
+
+.flower-tulipan .petal {
+    border-radius: 50% 50% 0 0;
+}
+
+.flower-girasol .petal {
+    border-radius: 10% 90% 10% 90%;
+}
+
+.flower-margarita .petal {
+    border-radius: 0 100% 0 100%;
+}
+
+.flower-orquidea .petal {
+    border-radius: 80% 20% 80% 20%;
+}
+
+.flower-lirio .petal {
+    border-radius: 40% 60% 40% 60%;
+}
+
+/* Estructura de la flor */
+.flower-head {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+
+.flower-center {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.petal {
+    width: 25px;
+    height: 35px;
+    border-radius: 50% 50% 50% 0;
+    position: absolute;
+    transform-origin: bottom left;
+    left: 50%;
+    top: -20px;
+    transform: translateX(-50%);
+    animation: petalGrow 0.8s ease-out;
+    animation-fill-mode: both;
+}
+
+@keyframes petalGrow {
+    from { 
+        transform: translateX(-50%) scale(0) rotate(var(--rotation, 0deg)); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(-50%) scale(1) rotate(var(--rotation, 0deg)) translateY(-15px); 
+        opacity: 1; 
+    }
+}
+
+.stem {
+    width: 6px;
+    height: 70px;
+    background: linear-gradient(180deg, #4ade80 0%, #22c55e 50%, #15803d 100%);
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 3px;
+    box-shadow: inset 2px 0 4px rgba(0,0,0,0.2);
+}
+
+.leaf {
+    width: 18px;
+    height: 10px;
+    background: linear-gradient(45deg, #4ade80 0%, #22c55e 100%);
+    border-radius: 50%;
+    position: absolute;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Efectos de partículas */
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+    border-radius: 50%;
+    animation: sparkleAnim 1s ease-out;
+    pointer-events: none;
+}
+
+@keyframes sparkleAnim {
+    0% { transform: scale(0) rotate(0deg); opacity: 1; }
+    50% { transform: scale(1.5) rotate(180deg); opacity: 0.8; }
+    100% { transform: scale(0) rotate(360deg); opacity: 0; }
+}
+
+/* Sistema de mensajes mejorado */
+.message-box {
+    background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+    backdrop-filter: blur(20px);
+    padding: 25px 35px;
+    border-radius: 25px;
+    box-shadow: var(--shadow-heavy);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+    max-width: 85%;
+    z-index: 100;
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(var(--accent-color), 0.3);
+}
+
+.flower-type {
+    font-weight: 700;
+    color: var(--accent-color);
+    font-size: 1.1em;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #999;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: rgba(0,0,0,0.1);
+    color: #333;
+    transform: scale(1.1);
+}
+
+@keyframes popIn {
+    0% { 
+        transform: translate(-50%, -50%) scale(0) rotate(-180deg); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.1) rotate(-90deg); 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+        opacity: 1; 
+    }
+}
+
+.message-text {
+    color: #333;
+    font-size: 1.3em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.message-footer {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.share-btn, .favorite-btn {
+    background: linear-gradient(135deg, var(--accent-color) 0%, #c084fc 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.share-btn:hover, .favorite-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+/* Instrucciones mejoradas */
+.instruction {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.2em;
+    margin-top: 20px;
+    animation: pulse 2s infinite, float 3s ease-in-out infinite;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    transition: all 0.8s ease;
+}
+
+.instruction small {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Contador mejorado */
+.counter {
+    color: var(--text-color);
+    font-size: 1.2em;
+    margin-top: 25px;
+    font-weight: 700;
+    padding: 10px 20px;
+    background: var(--glass-bg);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    display: inline-block;
+    animation: fadeIn 2s ease-in;
+}
+
+/* Panel de logros */
+.achievements-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 20px;
+    min-width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-light);
+    z-index: 50;
+}
+
+.achievements-panel h3 {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1.1em;
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.achievement-item.unlocked {
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.achievement-item.locked {
+    background: rgba(107, 114, 128, 0.2);
+    border: 1px solid rgba(107, 114, 128, 0.4);
+    opacity: 0.6;
+}
+
+.achievement-icon {
+    font-size: 1.5em;
+    width: 30px;
+    text-align: center;
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-info strong {
+    display: block;
+    color: var(--text-color);
+    font-size: 0.9em;
+    margin-bottom: 2px;
+}
+
+.achievement-info p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.8em;
+    line-height: 1.2;
+}
+
+/* Notificaciones de logros */
+.achievement-notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+    color: #7c2d12;
+    padding: 25px 35px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    z-index: 200;
+    animation: achievementPop 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    text-align: center;
+    border: 3px solid #f59e0b;
+}
+
+@keyframes achievementPop {
+    0% { 
+        transform: translate(-50%, -50%) scale(0) rotate(-180deg); 
+        opacity: 0; 
+    }
+    50% { 
+        transform: translate(-50%, -50%) scale(1.2) rotate(-90deg); 
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+        opacity: 1; 
+    }
+}
+
+.achievement-notification .achievement-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.achievement-notification h3 {
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+/* Indicador de estación */
+.season-indicator {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    padding: 15px 20px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 50;
+}
+
+.season-indicator button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.season-indicator button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Notificaciones generales */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    z-index: 150;
+    animation: slideIn 0.5s ease-out;
+    box-shadow: var(--shadow-light);
+}
+
+.notification-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.notification-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.notification-success {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+}
+
+@keyframes slideIn {
+    from { 
+        transform: translateX(100%); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateX(0); 
+        opacity: 1; 
+    }
+}
+
+/* Animaciones de entrada */
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(-30px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        max-width: 95%;
+    }
+    
+    .garden {
+        padding: 25px;
+        min-height: 350px;
+    }
+    
+    .achievements-panel {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        top: auto;
+        max-height: 200px;
+        min-width: 200px;
+    }
+    
+    .season-indicator {
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px 15px;
+    }
+    
+    .message-box {
+        max-width: 95%;
+        padding: 20px 25px;
+    }
+    
+    .message-text {
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .garden {
+        padding: 20px;
+        min-height: 300px;
+    }
+    
+    .flower {
+        transform: scale(0.8);
+    }
+    
+    .flower:hover {
+        transform: scale(0.9) rotate(5deg);
+    }
+}

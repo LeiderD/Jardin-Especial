@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Jardín Especial Para Ti 🌸</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <h1>🌸 Un Jardín Especial Para Ti 🌸</h1>
+        <p class="subtitle">Cada flor tiene algo especial que quiero decirte...</p>
+        
+        <div class="garden" id="garden">
+            <p class="instruction">✨ Haz clic en el jardín para hacer crecer flores ✨</p>
+        </div>
+        
+        <p class="counter">Flores cultivadas: <span id="flowerCount">0</span></p>
+    </div>
+
+    <script>
+        const messages = [
+            "Me encanta tu sonrisa, ilumina todo a tu alrededor ☀️",
+            "Eres increíblemente inteligente y siempre me sorprendes 🧠✨",
+            "Tu risa es mi sonido favorito en el mundo 🎵",
+            "Admiro tu forma de ver la vida con tanto optimismo 🌟",
+            "Cada conversación contigo hace mi día mejor 💬",
+            "Eres una persona genuina y auténtica, eso es hermoso 💎",
+            "Tu creatividad y pasión son inspiradoras 🎨",
+            "Me gusta cómo te preocupas por las personas que quieres 💝",
+            "Tienes un corazón enorme y generoso ❤️",
+            "Tu presencia hace que todo sea más especial 🌈",
+            "Eres fuerte y valiente, aunque a veces no lo notes 💪",
+            "Me encanta lo apasionada que eres con lo que te gusta 🔥",
+            "Tienes un talento especial para hacer sentir bien a los demás 🤗",
+            "Tu forma de pensar me fascina 💭✨",
+            "Eres única y eso te hace increíble 🦋"
+        ];
+
+        const colors = [
+            ['#ff6b9d', '#ff8fab'],
+            ['#c084fc', '#e9d5ff'],
+            ['#fbbf24', '#fef3c7'],
+            ['#60a5fa', '#dbeafe'],
+            ['#f472b6', '#fce7f3'],
+            ['#a78bfa', '#ede9fe']
+        ];
+
+        let flowerCount = 0;
+        let usedMessages = [];
+        const garden = document.getElementById('garden');
+        const flowerCountEl = document.getElementById('flowerCount');
+
+        // Crear estrellas
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 3 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        function createFlower(x, y) {
+            if (usedMessages.length === messages.length) {
+                usedMessages = [];
+            }
+
+            const availableMessages = messages.filter(m => !usedMessages.includes(m));
+            const message = availableMessages[Math.floor(Math.random() * availableMessages.length)];
+            usedMessages.push(message);
+
+            const flower = document.createElement('div');
+            flower.className = 'flower';
+            
+            const colorPair = colors[Math.floor(Math.random() * colors.length)];
+            
+            const stem = document.createElement('div');
+            stem.className = 'stem';
+            flower.appendChild(stem);
+
+            // Hojas
+            for (let i = 0; i < 2; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                leaf.style.bottom = 20 + i * 15 + 'px';
+                leaf.style.left = i === 0 ? '-10px' : '10px';
+                leaf.style.transform = `rotate(${i === 0 ? -45 : 45}deg)`;
+                stem.appendChild(leaf);
+            }
+
+            // Pétalos
+            const center = document.createElement('div');
+            center.style.cssText = `
+                width: 20px;
+                height: 20px;
+                background: ${colorPair[0]};
+                border-radius: 50%;
+                position: absolute;
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                box-shadow: 0 0 15px ${colorPair[0]}80;
+            `;
+            
+            for (let i = 0; i < 6; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.background = `linear-gradient(135deg, ${colorPair[0]} 0%, ${colorPair[1]} 100%)`;
+                petal.style.left = '10px';
+                petal.style.top = '-20px';
+                petal.style.transform = `rotate(${i * 60}deg) translateY(-15px)`;
+                center.appendChild(petal);
+            }
+            
+            flower.appendChild(center);
+
+            const rect = garden.getBoundingClientRect();
+            flower.style.left = x + 'px';
+            flower.style.top = y + 'px';
+
+            flower.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showMessage(message);
+                createParticles(e.clientX, e.clientY, colorPair[0]);
+            });
+
+            garden.appendChild(flower);
+            flowerCount++;
+            flowerCountEl.textContent = flowerCount;
+
+            createParticles(x + rect.left, y + rect.top, colorPair[0]);
+        }
+
+        function showMessage(text) {
+            const existing = document.querySelector('.message-box');
+            if (existing) existing.remove();
+
+            const messageBox = document.createElement('div');
+            messageBox.className = 'message-box';
+            messageBox.innerHTML = `
+                <p class="message-text">${text}</p>
+                <button class="close-btn" onclick="this.parentElement.remove()">Cerrar 💕</button>
+            `;
+            garden.appendChild(messageBox);
+
+            setTimeout(() => {
+                if (messageBox.parentElement) {
+                    messageBox.remove();
+                }
+            }, 5000);
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.background = color;
+                particle.style.animationDelay = i * 0.1 + 's';
+                document.body.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        garden.addEventListener('click', (e) => {
+            if (e.target === garden || e.target.classList.contains('instruction')) {
+                const rect = garden.getBoundingClientRect();
+                const x = e.clientX - rect.left - 20;
+                const y = e.clientY - rect.top - 40;
+                
+                if (x > 20 && x < rect.width - 40 && y > 20 && y < rect.height - 60) {
+                    createFlower(x, y);
+                    
+                    const instruction = garden.querySelector('.instruction');
+                    if (instruction && flowerCount === 1) {
+                        instruction.style.display = 'none';
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

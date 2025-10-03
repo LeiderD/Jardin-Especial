@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Jardín Especial Para Ti 🌸 - De Dario</title>
+    
+    <!-- Meta tags para SEO y compartir -->
+    <meta name="description" content="Un jardín interactivo lleno de amor, flores y mensajes especiales. Cada flor tiene algo único que decir.">
+    <meta name="keywords" content="jardín, amor, romántico, flores, interactivo, mensajes">
+    <meta name="author" content="Romance Garden Project">
+    
+    <!-- Open Graph para redes sociales -->
+    <meta property="og:title" content="Un Jardín Especial Para Ti 🌸">
+    <meta property="og:description" content="Cultiva flores únicas y descubre mensajes de amor especiales">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="./assets/preview.jpg">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>🌸</text></svg>">
+    
+    <!-- Estilos CSS -->
+    <link rel="stylesheet" href="css/styles-advanced.css">
+    <link rel="stylesheet" href="css/components.css">
+    
+    <!-- Preload de assets importantes -->
+    <link rel="preload" href="js/config.js" as="script">
+    <link rel="preload" href="js/garden.js" as="script">
+</head>
+<body>
+    <!-- Canvas para efectos especiales -->
+    <canvas id="effects-canvas"></canvas>
+    
+    <!-- Contenedor de estrellas -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Contenedor principal -->
+    <div class="container">
+        <header>
+            <h1 id="mainTitle">🌸 Un Jardín Especial Para Ti 🌸</h1>
+            <p class="subtitle" id="subtitle">Cada flor tiene algo especial que quiero decirte...</p>
+        </header>
+        
+        <main>
+            <!-- El jardín principal -->
+            <div class="garden" id="garden">
+                <p class="instruction">
+                    ✨ Haz clic en el jardín para hacer crecer flores ✨
+                    <br>
+                    <small>Presiona 'S' para cambiar estación • 'T' para cambiar tema • 'R' para reiniciar</small>
+                </p>
+            </div>
+            
+            <!-- Estadísticas del jardín -->
+            <div class="garden-stats hidden" id="gardenStats">
+                <p class="counter">
+                    Flores cultivadas: <span id="flowerCount">0</span>
+                </p>
+                <div class="stats-extra">
+                    <span id="currentSeason">Primavera</span> • 
+                    <span id="messagesLeft">15 mensajes restantes</span>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Panel de controles (se crea dinámicamente) -->
+    <div id="controls-panel" class="controls-panel hidden">
+        <button id="soundToggle" class="control-btn" title="Activar/Desactivar sonidos">🔊</button>
+        <button id="themeToggle" class="control-btn" title="Cambiar tema">🎨</button>
+        <button id="fullscreenToggle" class="control-btn" title="Pantalla completa">⛶</button>
+    </div>
+
+    <!-- Botón de ayuda flotante -->
+    <button id="helpButton" class="help-float-btn hidden" title="Ayuda rápida">
+        <span class="help-icon">?</span>
+    </button>
+
+    <!-- Panel de ayuda colapsable -->
+    <div id="quickHelpPanel" class="quick-help-panel hidden">
+        <div class="quick-help-content">
+            <div class="quick-help-header">
+                <h3>🌸 Ayuda Rápida</h3>
+                <button class="quick-help-close">&times;</button>
+            </div>
+            <div class="quick-help-body">
+                <div class="help-item">
+                    <span class="help-emoji">🖱️</span>
+                    <span>Haz clic en el jardín para crear flores</span>
+                </div>
+                <div class="help-item">
+                    <span class="help-emoji">🌸</span>
+                    <span>Toca las flores para leer mensajes especiales</span>
+                </div>
+                <div class="help-item">
+                    <span class="help-emoji">⌨️</span>
+                    <span><strong>S</strong> = Cambiar estación • <strong>T</strong> = Cambiar tema</span>
+                </div>
+                <div class="help-item">
+                    <span class="help-emoji">🔧</span>
+                    <span><strong>R</strong> = Reiniciar jardín • <strong>F</strong> = Pantalla completa</span>
+                </div>
+                <div class="help-item">
+                    <span class="help-emoji">🎮</span>
+                    <span><strong>P</strong> = Personalizar • <strong>ESC</strong> = Cerrar ventanas</span>
+                </div>
+                <div class="help-item">
+                    <span class="help-emoji">🏆</span>
+                    <span>Desbloquea logros cultivando más flores</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tutorial de bienvenida -->
+    <div id="welcomeTutorial" class="welcome-tutorial">
+        <div class="tutorial-content">
+            <div class="tutorial-step active" data-step="1">
+                <div class="tutorial-header">
+                    <h2>🌸 ¡Bienvenido/a a tu Jardín del Amor!</h2>
+                    <div class="tutorial-progress">
+                        <div class="progress-dot active"></div>
+                        <div class="progress-dot"></div>
+                        <div class="progress-dot"></div>
+                    </div>
+                </div>
+                <div class="tutorial-body">
+                    <div class="tutorial-icon">🌱</div>
+                    <p>Este es tu jardín especial donde cada flor guarda un mensaje único lleno de amor.</p>
+                    <p><strong>¿Lista para comenzar esta experiencia mágica?</strong></p>
+                </div>
+                <div class="tutorial-actions">
+                    <button class="tutorial-btn secondary" onclick="skipTutorial()">Saltar</button>
+                    <button class="tutorial-btn primary" onclick="nextTutorialStep()">Continuar ✨</button>
+                </div>
+            </div>
+
+            <div class="tutorial-step" data-step="2">
+                <div class="tutorial-header">
+                    <h2>🖱️ ¿Cómo cultivar flores?</h2>
+                    <div class="tutorial-progress">
+                        <div class="progress-dot completed"></div>
+                        <div class="progress-dot active"></div>
+                        <div class="progress-dot"></div>
+                    </div>
+                </div>
+                <div class="tutorial-body">
+                    <div class="tutorial-icon">🌸</div>
+                    <p>Es muy fácil: simplemente <strong>haz clic en cualquier parte del jardín</strong> y verás crecer una hermosa flor con colores únicos.</p>
+                    <div class="tutorial-demo">
+                        <div class="demo-garden">
+                            <div class="demo-cursor">👆</div>
+                            <span>Haz clic aquí</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tutorial-actions">
+                    <button class="tutorial-btn secondary" onclick="prevTutorialStep()">Atrás</button>
+                    <button class="tutorial-btn primary" onclick="nextTutorialStep()">Continuar 💫</button>
+                </div>
+            </div>
+
+            <div class="tutorial-step" data-step="3">
+                <div class="tutorial-header">
+                    <h2>💕 Descubre los mensajes</h2>
+                    <div class="tutorial-progress">
+                        <div class="progress-dot completed"></div>
+                        <div class="progress-dot completed"></div>
+                        <div class="progress-dot active"></div>
+                    </div>
+                </div>
+                <div class="tutorial-body">
+                    <div class="tutorial-icon">💌</div>
+                    <p>Cada flor que cultives tendrá un <strong>mensaje especial y único</strong>.</p>
+                    <p>Solo tienes que <strong>hacer clic en la flor</strong> para leer lo que tiene que decirte.</p>
+                    <div class="tutorial-features">
+                        <div class="feature">🏆 <span>Desbloquea logros</span></div>
+                        <div class="feature">🎨 <span>Cambia temas y estaciones</span></div>
+                        <div class="feature">🎵 <span>Efectos de sonido mágicos</span></div>
+                    </div>
+                </div>
+                <div class="tutorial-actions">
+                    <button class="tutorial-btn secondary" onclick="prevTutorialStep()">Atrás</button>
+                    <button class="tutorial-btn primary" onclick="startGardening()">¡Comenzar! 🌺</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de personalización -->
+    <div id="personalizationModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💕 Personalizar tu Jardín</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="userName">Tu nombre:</label>
+                    <input type="text" id="userName" placeholder="¿Cómo te llamas?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="partnerName">Nombre de tu persona especial:</label>
+                    <input type="text" id="partnerName" placeholder="¿Para quién es este jardín?">
+                </div>
+                
+                <div class="form-group">
+                    <label for="customMessage">Mensaje personalizado:</label>
+                    <textarea id="customMessage" placeholder="Escribe un mensaje especial que aparecerá en las flores..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button id="savePersonalization" class="btn-primary">Guardar 💾</button>
+                    <button id="resetPersonalization" class="btn-secondary">Resetear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts de la aplicación -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/effects.js"></script>
+    <script src="js/flower.js"></script>
+    <script src="js/garden.js"></script>
+    
+    <!-- Script de inicialización -->
+    <script>
+        // Variables globales
+        let garden;
+        let themeManager;
+        let personalizationManager;
+        let tutorialStep = 1;
+        let hasCompletedTutorial = false;
+        let isFirstFlower = true;
+        
+        // Inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si es la primera visita
+            const isFirstVisit = !localStorage.getItem('gardenTutorialCompleted');
+            hasCompletedTutorial = !isFirstVisit;
+            
+            // Inicializar managers
+            themeManager = new ThemeManager();
+            personalizationManager = new PersonalizationManager();
+            
+            // Inicializar el jardín principal
+            garden = new GardenManager();
+            
+            // Configurar controles
+            setupControls();
+            
+            // Configurar modales
+            setupModals();
+            
+            // Configurar atajos de teclado globales
+            setupGlobalKeyboard();
+            
+            // Configurar tutorial y UX
+            setupTutorialAndUX();
+            
+            console.log('🌸 Jardín del Amor inicializado correctamente');
+        });
+        
+        function setupTutorialAndUX() {
+            if (!hasCompletedTutorial) {
+                // Mostrar tutorial después de un momento
+                setTimeout(() => {
+                    showWelcomeTutorial();
+                }, 500);
+            } else {
+                // Si ya completó el tutorial, mostrar todo inmediatamente
+                showAllElements();
+                showDelayedElements();
+            }
+        }
+        
+        function showWelcomeTutorial() {
+            const tutorial = document.getElementById('welcomeTutorial');
+            tutorial.classList.add('active');
+            
+            // Ocultar otros elementos durante el tutorial
+            hideNonEssentialElements();
+        }
+        
+        function hideNonEssentialElements() {
+            // Ocultar estadísticas, controles y logros durante el tutorial
+            document.getElementById('gardenStats').classList.add('hidden');
+            document.getElementById('controls-panel').classList.add('hidden');
+            const achievementsPanel = document.getElementById('achievements');
+            if (achievementsPanel) achievementsPanel.classList.add('hidden');
+        }
+        
+        function showAllElements() {
+            // Mostrar elementos con animación escalonada
+            setTimeout(() => {
+                document.getElementById('gardenStats').classList.remove('hidden');
+                document.getElementById('gardenStats').classList.add('fade-in-up');
+            }, 300);
+            
+            setTimeout(() => {
+                document.getElementById('controls-panel').classList.remove('hidden');
+                document.getElementById('controls-panel').classList.add('slide-in-left');
+            }, 600);
+            
+            const achievementsPanel = document.getElementById('achievements');
+            if (achievementsPanel) {
+                setTimeout(() => {
+                    achievementsPanel.classList.remove('hidden');
+                    achievementsPanel.classList.add('slide-in-right');
+                }, 900);
+            }
+        }
+        
+        function showDelayedElements() {
+            // Mostrar botón de ayuda después de 2 segundos
+            setTimeout(() => {
+                const helpBtn = document.getElementById('helpButton');
+                helpBtn.classList.remove('hidden');
+                helpBtn.classList.add('bounce-in');
+            }, 2000);
+        }
+        
+        function nextTutorialStep() {
+            const currentStep = document.querySelector(`.tutorial-step[data-step="${tutorialStep}"]`);
+            currentStep.classList.remove('active');
+            currentStep.classList.add('fade-out');
+            
+            tutorialStep++;
+            
+            setTimeout(() => {
+                currentStep.classList.add('hidden');
+                const nextStep = document.querySelector(`.tutorial-step[data-step="${tutorialStep}"]`);
+                if (nextStep) {
+                    nextStep.classList.remove('hidden');
+                    nextStep.classList.add('active', 'fade-in');
+                }
+            }, 300);
+        }
+        
+        function prevTutorialStep() {
+            const currentStep = document.querySelector(`.tutorial-step[data-step="${tutorialStep}"]`);
+            currentStep.classList.remove('active');
+            currentStep.classList.add('fade-out');
+            
+            tutorialStep--;
+            
+            setTimeout(() => {
+                currentStep.classList.add('hidden');
+                const prevStep = document.querySelector(`.tutorial-step[data-step="${tutorialStep}"]`);
+                if (prevStep) {
+                    prevStep.classList.remove('hidden');
+                    prevStep.classList.add('active', 'fade-in');
+                }
+            }, 300);
+        }
+        
+        function skipTutorial() {
+            completeTutorial();
+        }
+        
+        function startGardening() {
+            completeTutorial();
+            // Pequeña animación para llamar la atención al jardín
+            const garden = document.getElementById('garden');
+            garden.classList.add('highlight-pulse');
+            setTimeout(() => {
+                garden.classList.remove('highlight-pulse');
+            }, 2000);
+        }
+        
+        function completeTutorial() {
+            const tutorial = document.getElementById('welcomeTutorial');
+            tutorial.classList.add('fade-out');
+            
+            setTimeout(() => {
+                tutorial.classList.add('hidden');
+                tutorial.classList.remove('active');
+                
+                // Marcar tutorial como completado
+                localStorage.setItem('gardenTutorialCompleted', 'true');
+                hasCompletedTutorial = true;
+                
+                // Mostrar todos los elementos con animación
+                showAllElements();
+                showDelayedElements();
+                
+            }, 300);
+        }
+        
+        // Funciones mejoradas para el manejo de la primera flor
+        function onFirstFlowerCreated() {
+            if (isFirstFlower) {
+                isFirstFlower = false;
+                
+                // Ocultar instrucciones gradualmente
+                const instruction = document.querySelector('.instruction');
+                if (instruction) {
+                    instruction.classList.add('fade-out-up');
+                    setTimeout(() => {
+                        instruction.style.display = 'none';
+                    }, 800);
+                }
+                
+                // Mostrar mensaje de felicitación
+                setTimeout(() => {
+                    garden.showNotification('¡Perfecto! 🌸 Ahora toca tu flor para leer el mensaje', 'success');
+                }, 1000);
+            }
+        }
+        
+        function setupControls() {
+            // Control de sonido
+            document.getElementById('soundToggle').addEventListener('click', () => {
+                const enabled = garden.soundManager.toggle();
+                document.getElementById('soundToggle').textContent = enabled ? '🔊' : '🔇';
+                garden.showNotification(enabled ? 'Sonidos activados 🎵' : 'Sonidos desactivados 🔇');
+            });
+            
+            // Control de tema
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                const themes = themeManager.getAvailableThemes();
+                const currentIndex = themes.findIndex(t => t.key === themeManager.currentTheme);
+                const nextTheme = themes[(currentIndex + 1) % themes.length];
+                themeManager.setTheme(nextTheme.key);
+                garden.showNotification(`Tema cambiado a: ${nextTheme.name} ✨`);
+            });
+            
+            // Control de pantalla completa
+            document.getElementById('fullscreenToggle').addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+            
+            // Botón de ayuda flotante
+            document.getElementById('helpButton').addEventListener('click', () => {
+                toggleQuickHelp();
+            });
+            
+            // Cerrar panel de ayuda
+            document.querySelector('.quick-help-close').addEventListener('click', () => {
+                hideQuickHelp();
+            });
+        }
+        
+        function toggleQuickHelp() {
+            const panel = document.getElementById('quickHelpPanel');
+            const isVisible = !panel.classList.contains('hidden');
+            
+            if (isVisible) {
+                hideQuickHelp();
+            } else {
+                showQuickHelp();
+            }
+        }
+        
+        function showQuickHelp() {
+            const panel = document.getElementById('quickHelpPanel');
+            panel.classList.remove('hidden');
+            panel.classList.add('slide-in-bottom');
+            
+            // Cerrar al hacer clic fuera
+            setTimeout(() => {
+                document.addEventListener('click', handleQuickHelpOutsideClick);
+            }, 100);
+        }
+        
+        function hideQuickHelp() {
+            const panel = document.getElementById('quickHelpPanel');
+            panel.classList.add('slide-out-bottom');
+            
+            setTimeout(() => {
+                panel.classList.add('hidden');
+                panel.classList.remove('slide-in-bottom', 'slide-out-bottom');
+            }, 300);
+            
+            document.removeEventListener('click', handleQuickHelpOutsideClick);
+        }
+        
+        function handleQuickHelpOutsideClick(e) {
+            const panel = document.getElementById('quickHelpPanel');
+            const helpButton = document.getElementById('helpButton');
+            
+            if (!panel.contains(e.target) && !helpButton.contains(e.target)) {
+                hideQuickHelp();
+            }
+        }
+        
+        function setupModals() {
+            // Cerrar modales
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    hideAllModals();
+                });
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideAllModals();
+                    }
+                });
+            });
+            
+            // Guardar personalización
+            document.getElementById('savePersonalization').addEventListener('click', () => {
+                const userName = document.getElementById('userName').value;
+                const partnerName = document.getElementById('partnerName').value;
+                const customMessage = document.getElementById('customMessage').value;
+                
+                if (userName) personalizationManager.setUserName(userName);
+                if (partnerName) personalizationManager.setPartnerName(partnerName);
+                if (customMessage) personalizationManager.addCustomMessage(customMessage);
+                
+                garden.showNotification('¡Personalización guardada! 💕', 'success');
+                hideAllModals();
+            });
+        }
+        
+        function setupGlobalKeyboard() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                switch(e.key.toLowerCase()) {
+                    case 'f':
+                        document.getElementById('fullscreenToggle').click();
+                        break;
+                    case 'h':
+                        document.getElementById('helpToggle').click();
+                        break;
+                    case 'p':
+                        showModal('personalizationModal');
+                        break;
+                    case 'escape':
+                        hideAllModals();
+                        break;
+                }
+            });
+        }
+        
+        function showModal(modalId) {
+            hideAllModals();
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+        
+        function hideAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.classList.add('hidden');
+            });
+        }
+        
+        function showWelcomeMessage() {
+            // Esta función ahora se maneja en setupTutorialAndUX
+            // Mantenemos para compatibilidad pero no hace nada si el tutorial está activo
+            if (hasCompletedTutorial) {
+                setTimeout(() => {
+                    const isFirstVisit = !localStorage.getItem('gardenVisited');
+                    if (isFirstVisit) {
+                        garden.showNotification('¡Bienvenido/a de vuelta a tu Jardín! 🌸', 'info');
+                        localStorage.setItem('gardenVisited', 'true');
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Funciones del tutorial que se llaman desde el HTML
+        window.nextTutorialStep = nextTutorialStep;
+        window.prevTutorialStep = prevTutorialStep;
+        window.skipTutorial = skipTutorial;
+        window.startGardening = startGardening;
+        
+        // Funciones globales para compartir
+        window.shareGarden = function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Mi Jardín del Amor',
+                    text: `¡He cultivado ${garden.flowerCount} flores en mi jardín especial! 🌸`,
+                    url: window.location.href
+                });
+            }
+        };
+        
+        // Prevenir zoom accidental en móviles
+        document.addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+        });
+        
+        // Mejorar experiencia táctil en móviles
+        let touchStartY = 0;
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', function(e) {
+            const touchY = e.touches[0].clientY;
+            const touchDiff = touchStartY - touchY;
+            
+            // Prevenir scroll del body solo en ciertas condiciones
+            if (document.querySelector('.welcome-tutorial.active') || 
+                document.querySelector('.quick-help-panel:not(.hidden)')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // PWA: Service Worker (futuro)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('SW registrado'))
+                    .catch(error => console.log('Error al registrar SW'));
+            });
+        }
+        
+        // Agregar soporte para efectos de logros mejorados
+        window.triggerSpecialEffect = function(type) {
+            if (garden && garden.effectsManager) {
+                switch(type) {
+                    case 'achievement':
+                        garden.effectsManager.createAchievementEffect();
+                        break;
+                    case 'celebration':
+                        // Efecto especial de celebración
+                        for (let i = 0; i < 5; i++) {
+                            setTimeout(() => {
+                                garden.effectsManager.createFallingPetal();
+                            }, i * 200);
+                        }
+                        break;
+                }
+            }
+        };
+        
+        // Debug: función para testing
+        window.debugGarden = function() {
+            console.log('🌸 Estado del Jardín:');
+            console.log('- Flores:', garden.flowerCount);
+            console.log('- Logros:', Array.from(garden.achievements));
+            console.log('- Estación:', garden.currentSeason);
+            console.log('- Tutorial completado:', hasCompletedTutorial);
+        };
+    </script>
+</body>
+</html>
