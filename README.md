@@ -1,5 +1,4 @@
-# 🌸 Special Garden - Jardín Interactivo De Dario
-
+# 🌸 Special Garden - Jardín Interactivo Romantc
 
 > **Un jardín romántico e interactivo donde cada flor cuenta una historia especial**
 
@@ -253,6 +252,5 @@ ATT: Dario
 Este proyecto nació del deseo de crear experiencias digitales que generen emociones reales y momentos de conexión auténtica entre las personas.
 
 ---
-
 
 *"En cada flor hay un mensaje, en cada jardín hay una historia, en cada momento compartido hay amor."* 🌸💕

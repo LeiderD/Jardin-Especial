@@ -1,10 +1,12 @@
-/* Tutorial de Bienvenida */
+/* Tutorial de Bienvenida - iOS Optimizado */
 .welcome-tutorial {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    height: 100vh;
+    height: calc(100vh - env(safe-area-inset-bottom));
     background: rgba(0, 0, 0, 0.9);
     backdrop-filter: blur(20px);
     display: flex;
@@ -14,6 +16,10 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s ease;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    /* iOS optimizations */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
 }
 
 .welcome-tutorial.active {
@@ -24,21 +30,29 @@
 .tutorial-content {
     background: linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.95) 100%);
     backdrop-filter: blur(30px);
-    border-radius: 25px;
+    border-radius: 20px;
     padding: 0;
-    max-width: 500px;
-    width: 90%;
+    max-width: 95%;
+    width: 100%;
+    max-width: 450px;
     max-height: 80vh;
     overflow: hidden;
     box-shadow: 0 25px 80px rgba(0,0,0,0.4);
     border: 2px solid rgba(255,255,255,0.3);
     position: relative;
+    /* iOS optimizations */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .tutorial-step {
     display: none;
     animation-duration: 0.5s;
     animation-fill-mode: both;
+    /* Asegurar scroll suave en contenido largo */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tutorial-step.active {
@@ -216,9 +230,20 @@
     font-size: 1em;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     min-width: 120px;
+    min-height: 44px;
+    /* iOS optimizations */
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .tutorial-btn.primary {
@@ -226,9 +251,14 @@
     color: white;
 }
 
-.tutorial-btn.primary:hover {
-    transform: translateY(-2px);
+.tutorial-btn.primary:hover,
+.tutorial-btn.primary:active {
+    transform: translateY(-2px) translateZ(0);
     box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.tutorial-btn.primary:active {
+    transform: scale(0.98) translateZ(0);
 }
 
 .tutorial-btn.secondary {
@@ -236,9 +266,14 @@
     color: white;
 }
 
-.tutorial-btn.secondary:hover {
-    transform: translateY(-2px);
+.tutorial-btn.secondary:hover,
+.tutorial-btn.secondary:active {
+    transform: translateY(-2px) translateZ(0);
     background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+}
+
+.tutorial-btn.secondary:active {
+    transform: scale(0.98) translateZ(0);
 }
 
 /* Botón de ayuda flotante */
@@ -946,6 +981,303 @@
 /* Tooltips */
 .tooltip {
     position: relative;
+}
+
+/* ==============================================
+   OPTIMIZACIONES MÓVILES PARA COMPONENTES
+   ============================================== */
+
+/* Media queries para tutorial en móviles */
+@media screen and (max-width: 768px) {
+    .tutorial-content {
+        max-width: 98%;
+        border-radius: 15px;
+        max-height: 85vh;
+    }
+    
+    .tutorial-header h2 {
+        font-size: 1.3em;
+        line-height: 1.3;
+        padding: 0 10px;
+    }
+    
+    .tutorial-body {
+        padding: 15px 20px;
+        font-size: 0.95em;
+        line-height: 1.5;
+    }
+    
+    .tutorial-body p {
+        margin-bottom: 12px;
+    }
+    
+    .tutorial-actions {
+        padding: 15px 20px 25px;
+        gap: 12px;
+    }
+    
+    .tutorial-btn {
+        min-width: 100px;
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+    
+    /* Ajustes para progress dots */
+    .progress-dot {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .welcome-tutorial {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: calc(10px + env(safe-area-inset-top));
+    }
+    
+    .tutorial-content {
+        max-width: 100%;
+        border-radius: 12px;
+        max-height: 90vh;
+        margin-top: 20px;
+    }
+    
+    .tutorial-header {
+        padding: 20px 15px 15px;
+    }
+    
+    .tutorial-header h2 {
+        font-size: 1.2em;
+        line-height: 1.2;
+    }
+    
+    .tutorial-body {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    
+    .tutorial-icon {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+    }
+    
+    .tutorial-actions {
+        padding: 15px;
+        gap: 10px;
+        flex-direction: column;
+    }
+    
+    .tutorial-btn {
+        width: 100%;
+        min-width: auto;
+        font-size: 0.95em;
+        padding: 12px 20px;
+    }
+    
+    /* Features del tutorial */
+    .tutorial-features {
+        gap: 8px;
+    }
+    
+    .feature {
+        font-size: 0.85em;
+        padding: 6px 10px;
+    }
+    
+    /* Demo garden en tutorial */
+    .demo-garden {
+        padding: 15px;
+        font-size: 0.9em;
+    }
+}
+
+/* Panel de ayuda rápida - móvil optimizado */
+@media screen and (max-width: 768px) {
+    .quick-help-panel {
+        bottom: calc(10px + env(safe-area-inset-bottom));
+        left: calc(10px + env(safe-area-inset-left));
+        right: calc(10px + env(safe-area-inset-right));
+        border-radius: 15px;
+        max-height: 60vh;
+    }
+    
+    .quick-help-content {
+        border-radius: 15px;
+    }
+    
+    .quick-help-header h3 {
+        font-size: 1.1em;
+    }
+    
+    .help-item {
+        padding: 8px 0;
+        font-size: 0.9em;
+    }
+    
+    .help-emoji {
+        font-size: 1.2em;
+        min-width: 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .quick-help-panel {
+        bottom: calc(5px + env(safe-area-inset-bottom));
+        left: calc(5px + env(safe-area-inset-left));
+        right: calc(5px + env(safe-area-inset-right));
+        max-height: 70vh;
+    }
+    
+    .quick-help-header {
+        padding: 15px;
+    }
+    
+    .quick-help-header h3 {
+        font-size: 1em;
+    }
+    
+    .quick-help-body {
+        padding: 10px 15px 15px;
+    }
+    
+    .help-item {
+        padding: 6px 0;
+        font-size: 0.85em;
+        line-height: 1.4;
+    }
+    
+    .help-emoji {
+        font-size: 1.1em;
+        min-width: 25px;
+    }
+}
+
+/* Modal de personalización - móvil optimizado */
+@media screen and (max-width: 768px) {
+    .modal-content {
+        max-width: 95%;
+        border-radius: 15px;
+        max-height: 85vh;
+        margin: 10px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.3em;
+    }
+    
+    .form-group label {
+        font-size: 0.95em;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px; /* Prevenir zoom en iOS */
+        padding: 12px 15px;
+    }
+    
+    .form-actions {
+        gap: 10px;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        font-size: 0.9em;
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .modal {
+        padding: 10px;
+        align-items: flex-start;
+        padding-top: calc(20px + env(safe-area-inset-top));
+    }
+    
+    .modal-content {
+        max-width: 100%;
+        max-height: 90vh;
+        margin: 0;
+    }
+    
+    .modal-header {
+        padding: 20px 15px 15px;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.2em;
+    }
+    
+    .modal-body {
+        padding: 10px 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-actions {
+        padding: 15px;
+        flex-direction: column;
+    }
+    
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+        margin: 0;
+        font-size: 0.95em;
+        padding: 12px 20px;
+    }
+}
+
+/* Landscape específico para móviles pequeños */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .welcome-tutorial {
+        align-items: flex-start;
+        padding-top: calc(5px + env(safe-area-inset-top));
+    }
+    
+    .tutorial-content {
+        max-height: 95vh;
+        margin-top: 5px;
+    }
+    
+    .tutorial-header {
+        padding: 15px 20px 10px;
+    }
+    
+    .tutorial-header h2 {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
+    
+    .tutorial-body {
+        padding: 10px 20px;
+    }
+    
+    .tutorial-icon {
+        font-size: 2em;
+        margin-bottom: 8px;
+    }
+    
+    .tutorial-actions {
+        padding: 10px 20px 15px;
+        gap: 10px;
+    }
+    
+    .tutorial-btn {
+        font-size: 0.85em;
+        padding: 8px 16px;
+        min-height: 36px;
+    }
+    
+    .quick-help-panel {
+        max-height: 80vh;
+    }
+    
+    .modal-content {
+        max-height: 95vh;
+    }
 }
 
 .tooltip::after {

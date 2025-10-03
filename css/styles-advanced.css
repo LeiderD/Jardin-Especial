@@ -1,4 +1,4 @@
-/* Jardín Interactivo de Flores - Estilos CSS Mejorados v2.0 */
+/* Jardín Interactivo de Flores - Estilos CSS Mejorados v2.0 + iOS Optimized */
 
 :root {
     --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -8,24 +8,53 @@
     --glass-border: rgba(255, 255, 255, 0.2);
     --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.3);
     --shadow-heavy: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --safe-area-inset-top: env(safe-area-inset-top);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+    --safe-area-inset-left: env(safe-area-inset-left);
+    --safe-area-inset-right: env(safe-area-inset-right);
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Mejorar rendimiento en iOS */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+    /* Prevenir zoom en iOS */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Mejorar scroll en iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: var(--bg-gradient);
     min-height: 100vh;
+    min-height: calc(100vh - var(--safe-area-inset-bottom));
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     position: relative;
     color: var(--text-color);
+    /* iOS Safari optimizations */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    /* Prevenir rebote en iOS */
+    overscroll-behavior: none;
+    height: 100vh;
+    height: calc(100vh - var(--safe-area-inset-bottom));
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
+    padding-left: var(--safe-area-inset-left);
+    padding-right: var(--safe-area-inset-right);
 }
 
 /* Estrellas mejoradas con más variedad */
@@ -57,21 +86,24 @@ body {
     }
 }
 
-/* Contenedor principal mejorado */
+/* Contenedor principal mejorado para móviles */
 .container {
     text-align: center;
     z-index: 1;
-    max-width: 1000px;
-    padding: 20px;
+    max-width: 95vw;
+    width: 100%;
+    padding: 10px;
     position: relative;
+    margin: 0 auto;
 }
 
 h1 {
     color: var(--text-color);
-    font-size: clamp(2em, 5vw, 3em);
-    margin-bottom: 20px;
+    font-size: clamp(1.5em, 6vw, 3em);
+    margin-bottom: 15px;
     text-shadow: 2px 2px 20px rgba(0,0,0,0.5);
     animation: fadeIn 1s ease-in, glow 3s ease-in-out infinite alternate;
+    line-height: 1.2;
 }
 
 @keyframes glow {
@@ -81,43 +113,100 @@ h1 {
 
 .subtitle {
     color: rgba(255,255,255,0.9);
-    font-size: clamp(1em, 3vw, 1.3em);
-    margin-bottom: 30px;
+    font-size: clamp(0.9em, 3.5vw, 1.3em);
+    margin-bottom: 20px;
     animation: fadeIn 1.5s ease-in;
+    line-height: 1.4;
+    padding: 0 10px;
 }
 
-/* Jardín mejorado con efectos glassmorphism */
+/* Jardín mejorado con efectos glassmorphism - Optimizado para móviles */
 .garden {
     position: relative;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
-    border-radius: 30px;
-    padding: 40px;
-    min-height: 450px;
+    border-radius: 20px;
+    padding: 20px;
+    min-height: 400px;
+    max-height: 70vh;
     box-shadow: var(--shadow-heavy);
     border: 2px solid var(--glass-border);
     transition: all 0.3s ease;
     overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+    /* iOS Safari optimizations */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .garden:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: 0 15px 50px rgba(0,0,0,0.4);
 }
 
-/* Sistema de flores mejorado */
+/* Sistema de flores mejorado para móviles */
 .flower {
     position: absolute;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     animation: growFlower 0.6s ease-out;
     z-index: 2;
+    /* Mejorar táctil en móviles */
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    min-width: 40px;
+    min-height: 40px;
 }
 
-.flower:hover {
-    transform: scale(1.15) rotate(5deg);
+.flower:hover, .flower:active {
+    transform: scale(1.15) rotate(5deg) translateZ(0);
     filter: brightness(1.2) saturate(1.3);
     z-index: 10;
+}
+
+/* Media queries específicas para iOS y móviles */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 5px;
+        max-width: 98vw;
+    }
+    
+    .garden {
+        padding: 15px;
+        min-height: 350px;
+        border-radius: 15px;
+        max-height: 65vh;
+    }
+    
+    h1 {
+        margin-bottom: 10px;
+    }
+    
+    .subtitle {
+        margin-bottom: 15px;
+        padding: 0 5px;
+    }
+    
+    .flower {
+        min-width: 35px;
+        min-height: 35px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .garden {
+        padding: 10px;
+        min-height: 300px;
+        max-height: 60vh;
+    }
+    
+    .flower {
+        min-width: 30px;
+        min-height: 30px;
+    }
 }
 
 .flower.blossoming {
@@ -398,21 +487,102 @@ h1 {
     animation: fadeIn 2s ease-in;
 }
 
-/* Panel de logros */
+/* Panel de logros - Inicia siempre como botón colapsado */
 .achievements-panel {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: calc(20px + var(--safe-area-inset-top));
+    right: calc(20px + var(--safe-area-inset-right));
+    background: var(--accent-color);
+    backdrop-filter: blur(20px);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-heavy);
+    z-index: 50;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Botón toggle - siempre visible */
+.achievements-toggle {
+    display: block;
+    position: static;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: none;
+    /* iOS optimizations */
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.achievements-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Contenido del panel - oculto por defecto */
+.achievements-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 20px;
-    padding: 20px;
-    min-width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estado expandido */
+.achievements-panel:not(.collapsed) {
+    width: 280px;
+    height: auto;
+    min-height: 200px;
     max-height: 400px;
-    overflow-y: auto;
+    border-radius: 20px;
+    background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-light);
-    z-index: 50;
+}
+
+.achievements-panel:not(.collapsed) .achievements-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    font-size: 1em;
+    z-index: 52;
+}
+
+.achievements-panel:not(.collapsed) .achievements-content {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    pointer-events: auto;
+    padding-top: 50px;
+    overflow-y: auto;
 }
 
 .achievements-panel h3 {
@@ -597,6 +767,319 @@ h1 {
     }
 }
 
+/* ==============================================
+   OPTIMIZACIONES ESPECÍFICAS PARA iOS/MÓVILES
+   ============================================== */
+
+/* Estilos base para todos los botones - iOS optimized */
+button, .btn, .control-btn, .tutorial-btn {
+    /* Eliminar estilos por defecto de iOS */
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    border-radius: 0;
+    
+    /* Optimizaciones táctiles */
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Mejorar rendimiento */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+    
+    /* Tamaño mínimo para táctil */
+    min-height: 44px;
+    min-width: 44px;
+    
+    /* Cursor y transiciones */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Botones de control específicos */
+.controls-panel {
+    position: fixed;
+    bottom: calc(20px + var(--safe-area-inset-bottom));
+    right: calc(20px + var(--safe-area-inset-right));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+}
+
+.control-btn {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--glass-border);
+    border-radius: 15px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: var(--text-color);
+    box-shadow: var(--shadow-light);
+}
+
+.control-btn:active {
+    transform: scale(0.95) translateZ(0);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Botón solo para móviles */
+.mobile-only {
+    display: none;
+}
+
+/* Mostrar botones mobile-only solo en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    .mobile-only {
+        display: flex;
+    }
+}
+
+/* Estilo específico para botón de reinicio */
+.control-btn#resetGarden {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.control-btn#resetGarden:active {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: scale(0.95) translateZ(0);
+}
+
+/* Botón de ayuda flotante */
+.help-float-btn {
+    position: fixed;
+    top: calc(20px + var(--safe-area-inset-top));
+    right: calc(20px + var(--safe-area-inset-right));
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    font-size: 1.4em;
+    font-weight: bold;
+    box-shadow: var(--shadow-heavy);
+    z-index: 100;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.help-float-btn:active {
+    transform: scale(0.9) translateZ(0);
+}
+
+/* Indicador de estación - móvil optimizado */
+.season-indicator {
+    position: fixed;
+    top: calc(20px + var(--safe-area-inset-top));
+    left: calc(20px + var(--safe-area-inset-left));
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    padding: 10px 15px;
+    border: 1px solid var(--glass-border);
+    color: var(--text-color);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 50;
+    font-size: 0.9em;
+}
+
+.season-indicator button {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 600;
+    min-height: 32px;
+    min-width: 40px;
+}
+
+.season-indicator button:active {
+    transform: scale(0.95) translateZ(0);
+    background: rgba(255, 107, 157, 0.8);
+}
+
+/* Notificaciones - móvil optimizado */
+.notification {
+    position: fixed;
+    bottom: calc(20px + var(--safe-area-inset-bottom));
+    left: calc(20px + var(--safe-area-inset-left));
+    right: calc(20px + var(--safe-area-inset-right));
+    padding: 15px 20px;
+    border-radius: 15px;
+    color: white;
+    font-weight: 600;
+    z-index: 150;
+    animation: slideInBottom 0.5s ease-out;
+    box-shadow: var(--shadow-light);
+    text-align: center;
+    max-width: calc(100vw - 40px);
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+@keyframes slideInBottom {
+    from { 
+        transform: translateY(100%) translateZ(0); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0) translateZ(0); 
+        opacity: 1; 
+    }
+}
+
+/* Inputs y formularios - iOS optimized */
+input, textarea, select {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 10px;
+    font-size: 16px; /* Prevenir zoom en iOS */
+    padding: 12px 15px;
+    border: 2px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: var(--text-color);
+    backdrop-filter: blur(10px);
+    min-height: 44px;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
+}
+
+/* Media queries específicas para móviles pequeños */
+@media screen and (max-width: 480px) {
+    .controls-panel {
+        bottom: calc(15px + var(--safe-area-inset-bottom));
+        right: calc(15px + var(--safe-area-inset-right));
+        gap: 8px;
+    }
+    
+    .control-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1em;
+    }
+    
+    .help-float-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2em;
+        top: calc(15px + var(--safe-area-inset-top));
+        right: calc(15px + var(--safe-area-inset-right));
+    }
+    
+    /* Panel de logros en pantallas muy pequeñas */
+    .achievements-panel {
+        bottom: calc(15px + var(--safe-area-inset-bottom));
+        right: calc(15px + var(--safe-area-inset-right));
+    }
+    
+    .achievements-panel.collapsed {
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+        max-height: 50px;
+    }
+    
+    .achievements-panel:not(.collapsed) {
+        max-height: 200px;
+        width: 200px;
+        max-width: calc(100vw - 30px);
+    }
+    
+    .achievements-panel .achievements-toggle {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1em;
+    }
+    
+    .achievements-panel:not(.collapsed) .achievements-content {
+        max-height: 150px;
+        padding: 15px;
+        padding-top: 45px;
+    }
+    
+    .season-indicator {
+        top: calc(15px + var(--safe-area-inset-top));
+        left: calc(15px + var(--safe-area-inset-left));
+        padding: 8px 12px;
+        font-size: 0.8em;
+        gap: 8px;
+    }
+    
+    .season-indicator button {
+        padding: 4px 8px;
+        font-size: 0.7em;
+        min-height: 28px;
+        min-width: 35px;
+    }
+    
+    .notification {
+        bottom: calc(15px + var(--safe-area-inset-bottom));
+        left: calc(15px + var(--safe-area-inset-left));
+        right: calc(15px + var(--safe-area-inset-right));
+        padding: 12px 15px;
+        font-size: 0.85em;
+    }
+}
+
+/* Landscape específico para móviles */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .controls-panel {
+        right: calc(10px + var(--safe-area-inset-right));
+        bottom: calc(10px + var(--safe-area-inset-bottom));
+    }
+    
+    .help-float-btn {
+        top: calc(10px + var(--safe-area-inset-top));
+        right: calc(10px + var(--safe-area-inset-right));
+    }
+    
+    .season-indicator {
+        top: calc(10px + var(--safe-area-inset-top));
+        left: calc(10px + var(--safe-area-inset-left));
+    }
+    
+    .container {
+        padding: 5px;
+    }
+    
+    h1 {
+        font-size: clamp(1.2em, 4vw, 2em);
+        margin-bottom: 5px;
+    }
+    
+    .subtitle {
+        font-size: clamp(0.8em, 2.5vw, 1em);
+        margin-bottom: 10px;
+    }
+    
+    .garden {
+        min-height: 250px;
+        max-height: 50vh;
+        padding: 10px;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -611,11 +1094,59 @@ h1 {
     
     .achievements-panel {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: calc(20px + var(--safe-area-inset-bottom));
+        right: calc(20px + var(--safe-area-inset-right));
         top: auto;
+        min-width: 60px;
+        max-width: 280px;
+        border-radius: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Mostrar botón toggle en móviles */
+    .achievements-panel .achievements-toggle {
+        display: block;
+    }
+    
+    /* Estado colapsado en móviles */
+    .achievements-panel.collapsed {
+        min-width: 60px;
+        max-height: 60px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--accent-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .achievements-panel.collapsed .achievements-content {
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.8);
+        pointer-events: none;
+        padding: 0;
+    }
+    
+    .achievements-panel.collapsed .achievements-toggle {
+        position: static;
+        background: transparent;
+        box-shadow: none;
+        font-size: 1.5em;
+    }
+    
+    /* Estado expandido en móviles */
+    .achievements-panel:not(.collapsed) {
+        max-height: 250px;
+        width: 250px;
+    }
+    
+    .achievements-panel:not(.collapsed) .achievements-content {
+        overflow-y: auto;
         max-height: 200px;
-        min-width: 200px;
+        padding: 20px;
+        padding-top: 50px; /* Espacio para el botón toggle */
     }
     
     .season-indicator {

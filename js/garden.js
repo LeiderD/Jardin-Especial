@@ -150,8 +150,16 @@ class GardenManager {
                     this.createFlower(x, y);
                     
                     const instruction = this.garden.querySelector('.instruction');
-                    if (instruction && this.flowerCount === 1) {
+                    // En móviles, ocultar siempre las instrucciones al crear flor
+                    // En desktop, solo ocultar en la primera flor
+                    const isMobile = window.innerWidth <= 768;
+                    if (instruction && (isMobile || this.flowerCount === 1)) {
                         instruction.style.display = 'none';
+                        
+                        // Llamar a la función de primera flor si aplica
+                        if (this.flowerCount === 1 && typeof onFirstFlowerCreated === 'function') {
+                            onFirstFlowerCreated();
+                        }
                     }
                 }
             }
@@ -227,7 +235,32 @@ class GardenManager {
         const panel = document.createElement('div');
         panel.id = 'achievements';
         panel.className = 'achievements-panel';
-        panel.innerHTML = '<h3>Logros</h3><div class="achievements-list"></div>';
+        
+        // Crear botón toggle para móviles
+        const toggleBtn = document.createElement('button');
+        toggleBtn.className = 'achievements-toggle';
+        toggleBtn.innerHTML = '🏆';
+        toggleBtn.title = 'Ver/Ocultar Logros';
+        
+        // Crear contenido colapsable
+        const content = document.createElement('div');
+        content.className = 'achievements-content';
+        content.innerHTML = '<h3>Logros</h3><div class="achievements-list"></div>';
+        
+        // Event listener para toggle
+        toggleBtn.addEventListener('click', () => {
+            panel.classList.toggle('collapsed');
+            const isCollapsed = panel.classList.contains('collapsed');
+            toggleBtn.setAttribute('aria-expanded', !isCollapsed);
+        });
+        
+        panel.appendChild(toggleBtn);
+        panel.appendChild(content);
+        
+        // Empezar siempre colapsado (botón)
+        panel.classList.add('collapsed');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        
         document.body.appendChild(panel);
         this.updateAchievementPanel();
     }
