@@ -6,10 +6,8 @@ class GardenManager {
         this.flowerCount = 0;
         this.usedMessages = [];
         this.currentSeason = this.getCurrentSeason();
-        this.achievements = new Set();
         this.garden = document.getElementById('garden');
         this.flowerCountEl = document.getElementById('flowerCount');
-        this.achievementsEl = document.getElementById('achievements');
         this.soundManager = new SoundManager();
         this.effectsManager = new EffectsManager();
         this.storageManager = new StorageManager();
@@ -23,7 +21,6 @@ class GardenManager {
         this.setupEventListeners();
         this.createSeasonIndicator();
         this.createThemeSelector();
-        this.createAchievementPanel();
     }
 
     getCurrentSeason() {
@@ -59,7 +56,6 @@ class GardenManager {
         
         this.flowerCount++;
         this.updateFlowerCount();
-        this.checkAchievements();
         this.saveProgress();
         
         this.soundManager.play('grow');
@@ -69,13 +65,19 @@ class GardenManager {
         if (this.flowerCount === 1 && typeof onFirstFlowerCreated === 'function') {
             onFirstFlowerCreated();
         }
+        
+        // Verificar cartas desbloqueables
+        if (typeof loveLettersSystem !== 'undefined') {
+            loveLettersSystem.checkUnlocks(this.flowerCount);
+        }
     }
 
     getRandomMessage() {
         const allMessages = [
             ...GardenConfig.messages.romantic,
             ...GardenConfig.messages.inspiring,
-            ...GardenConfig.messages.caring
+            ...GardenConfig.messages.caring,
+            ...GardenConfig.messages.missing
         ];
 
         if (this.usedMessages.length === allMessages.length) {
@@ -97,54 +99,24 @@ class GardenManager {
         }, 500);
     }
 
-    checkAchievements() {
-        const achievements = GardenConfig.achievements;
-        
-        if (this.flowerCount === 1 && !this.achievements.has('firstFlower')) {
-            this.unlockAchievement('firstFlower');
-        }
-        if (this.flowerCount === 10 && !this.achievements.has('florist')) {
-            this.unlockAchievement('florist');
-        }
-        if (this.flowerCount === 25 && !this.achievements.has('gardener')) {
-            this.unlockAchievement('gardener');
-        }
-        if (this.flowerCount === 50 && !this.achievements.has('botanist')) {
-            this.unlockAchievement('botanist');
-        }
-    }
-
-    unlockAchievement(achievementKey) {
-        this.achievements.add(achievementKey);
-        const achievement = GardenConfig.achievements[achievementKey];
-        this.showAchievementNotification(achievement);
-        this.updateAchievementPanel();
-    }
-
-    showAchievementNotification(achievement) {
-        const notification = document.createElement('div');
-        notification.className = 'achievement-notification';
-        notification.innerHTML = `
-            <div class="achievement-icon">${achievement.icon}</div>
-            <div class="achievement-text">
-                <h3>¡Logro Desbloqueado!</h3>
-                <p><strong>${achievement.name}</strong></p>
-                <p>${achievement.description}</p>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        this.soundManager.play('achievement');
-        
-        setTimeout(() => notification.remove(), 5000);
-    }
-
     setupEventListeners() {
-        this.garden.addEventListener('click', (e) => {
+        // Soporte para eventos táctiles y de mouse
+        const handleInteraction = (e) => {
             if (e.target === this.garden || e.target.classList.contains('instruction')) {
+                e.preventDefault(); // Prevenir comportamiento por defecto en móviles
+                
                 const rect = this.garden.getBoundingClientRect();
-                const x = e.clientX - rect.left - 20;
-                const y = e.clientY - rect.top - 40;
+                let x, y;
+                
+                // Detectar si es touch o click
+                if (e.type === 'touchstart' || e.type === 'touchend') {
+                    const touch = e.changedTouches[0];
+                    x = touch.clientX - rect.left - 20;
+                    y = touch.clientY - rect.top - 40;
+                } else {
+                    x = e.clientX - rect.left - 20;
+                    y = e.clientY - rect.top - 40;
+                }
                 
                 if (x > 20 && x < rect.width - 40 && y > 20 && y < rect.height - 60) {
                     this.createFlower(x, y);
@@ -163,9 +135,25 @@ class GardenManager {
                     }
                 }
             }
-        });
+        };
+        
+        // Eventos de mouse
+        this.garden.addEventListener('click', handleInteraction);
+        
+        // Eventos táctiles para móviles
+        this.garden.addEventListener('touchend', handleInteraction, { passive: false });
+        
+        // Prevenir zoom de doble toque en el jardín
+        let lastTouchEnd = 0;
+        this.garden.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
 
-        // Atajos de teclado
+        // Atajos de teclado (solo en desktop)
         document.addEventListener('keydown', (e) => {
             if (e.key === 's' || e.key === 'S') {
                 this.changeSeason();
@@ -182,7 +170,6 @@ class GardenManager {
     saveProgress() {
         this.storageManager.save({
             flowerCount: this.flowerCount,
-            achievements: Array.from(this.achievements),
             usedMessages: this.usedMessages,
             currentSeason: this.currentSeason
         });
@@ -192,11 +179,9 @@ class GardenManager {
         const data = this.storageManager.load();
         if (data) {
             this.flowerCount = data.flowerCount || 0;
-            this.achievements = new Set(data.achievements || []);
             this.usedMessages = data.usedMessages || [];
             this.currentSeason = data.currentSeason || this.getCurrentSeason();
             this.updateFlowerCount();
-            this.updateAchievementPanel();
         }
     }
 
@@ -231,68 +216,64 @@ class GardenManager {
         // Implementar selector de temas
     }
 
-    createAchievementPanel() {
-        const panel = document.createElement('div');
-        panel.id = 'achievements';
-        panel.className = 'achievements-panel';
-        
-        // Crear botón toggle para móviles
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'achievements-toggle';
-        toggleBtn.innerHTML = '🏆';
-        toggleBtn.title = 'Ver/Ocultar Logros';
-        
-        // Crear contenido colapsable
-        const content = document.createElement('div');
-        content.className = 'achievements-content';
-        content.innerHTML = '<h3>Logros</h3><div class="achievements-list"></div>';
-        
-        // Event listener para toggle
-        toggleBtn.addEventListener('click', () => {
-            panel.classList.toggle('collapsed');
-            const isCollapsed = panel.classList.contains('collapsed');
-            toggleBtn.setAttribute('aria-expanded', !isCollapsed);
-        });
-        
-        panel.appendChild(toggleBtn);
-        panel.appendChild(content);
-        
-        // Empezar siempre colapsado (botón)
-        panel.classList.add('collapsed');
-        toggleBtn.setAttribute('aria-expanded', 'false');
-        
-        document.body.appendChild(panel);
-        this.updateAchievementPanel();
-    }
-
-    updateAchievementPanel() {
-        const list = document.querySelector('.achievements-list');
-        list.innerHTML = '';
-        
-        Object.entries(GardenConfig.achievements).forEach(([key, achievement]) => {
-            const item = document.createElement('div');
-            item.className = `achievement-item ${this.achievements.has(key) ? 'unlocked' : 'locked'}`;
-            item.innerHTML = `
-                <span class="achievement-icon">${achievement.icon}</span>
-                <div class="achievement-info">
-                    <strong>${achievement.name}</strong>
-                    <p>${achievement.description}</p>
-                </div>
-            `;
-            list.appendChild(item);
-        });
-    }
-
     resetGarden() {
-        if (confirm('¿Estás seguro de que quieres reiniciar el jardín?')) {
-            this.garden.querySelectorAll('.flower').forEach(flower => flower.remove());
-            this.flowerCount = 0;
-            this.usedMessages = [];
-            this.achievements.clear();
-            this.updateFlowerCount();
-            this.updateAchievementPanel();
-            this.saveProgress();
-            document.querySelector('.instruction').style.display = 'block';
-        }
+        // Mostrar modal de confirmación personalizado
+        this.showResetConfirmation();
+    }
+    
+    showResetConfirmation() {
+        const modal = document.getElementById('confirmResetModal');
+        modal.classList.remove('hidden');
+        
+        // Configurar botones
+        const confirmBtn = document.getElementById('confirmReset');
+        const cancelBtn = document.getElementById('cancelReset');
+        
+        const handleConfirm = () => {
+            this.executeReset();
+            modal.classList.add('hidden');
+            cleanup();
+        };
+        
+        const handleCancel = () => {
+            modal.classList.add('hidden');
+            cleanup();
+        };
+        
+        // Cerrar al hacer clic fuera del modal
+        const handleClickOutside = (e) => {
+            if (e.target === modal) {
+                handleCancel();
+            }
+        };
+        
+        const cleanup = () => {
+            confirmBtn.removeEventListener('click', handleConfirm);
+            cancelBtn.removeEventListener('click', handleCancel);
+            modal.removeEventListener('click', handleClickOutside);
+            document.removeEventListener('keydown', handleEsc);
+        };
+        
+        confirmBtn.addEventListener('click', handleConfirm);
+        cancelBtn.addEventListener('click', handleCancel);
+        modal.addEventListener('click', handleClickOutside);
+        
+        // Cerrar con ESC
+        const handleEsc = (e) => {
+            if (e.key === 'Escape') {
+                handleCancel();
+            }
+        };
+        document.addEventListener('keydown', handleEsc);
+    }
+    
+    executeReset() {
+        this.garden.querySelectorAll('.flower').forEach(flower => flower.remove());
+        this.flowerCount = 0;
+        this.usedMessages = [];
+        this.updateFlowerCount();
+        this.saveProgress();
+        document.querySelector('.instruction').style.display = 'block';
+        this.showNotification('Jardín reiniciado 🌱', 'info');
     }
 }

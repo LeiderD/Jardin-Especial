@@ -38,9 +38,6 @@ class SoundManager {
         
         // Sonido de click - tono corto y dulce
         this.sounds.click = () => this.playTone([880], 0.1, 'sine');
-        
-        // Sonido de logro - acorde triunfal
-        this.sounds.achievement = () => this.playTone([523.25, 659.25, 783.99], 0.5, 'triangle');
     }
 
     playTone(frequencies, duration, type = 'sine') {

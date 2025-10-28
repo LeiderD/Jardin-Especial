@@ -2,12 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    
+    <!-- iOS Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Jardín Especial">
+    
+    <!-- Android Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#4c1d95">
+    <meta name="color-scheme" content="dark light">
+    
+    <!-- Prevenir zoom y mejorar táctil -->
     <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="375">
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
     <title>Un Jardín Especial Para Ti 🌸 - De Dario</title>
     
     <!-- Meta tags para SEO y compartir -->
@@ -72,6 +86,8 @@
     <!-- Panel de controles (se crea dinámicamente) -->
     <div id="controls-panel" class="controls-panel hidden">
         <button id="soundToggle" class="control-btn" title="Activar/Desactivar sonidos">🔊</button>
+        <button id="musicToggle" class="control-btn" title="Música de fondo">🎵</button>
+        <button id="lettersToggle" class="control-btn" title="Cartas de amor">💌</button>
         <button id="themeToggle" class="control-btn" title="Cambiar tema">🎨</button>
         <button id="resetGarden" class="control-btn mobile-only" title="Reiniciar jardín">🔄</button>
         <button id="fullscreenToggle" class="control-btn" title="Pantalla completa">⛶</button>
@@ -109,10 +125,6 @@
                 <div class="help-item">
                     <span class="help-emoji">🎮</span>
                     <span><strong>P</strong> = Personalizar • <strong>ESC</strong> = Cerrar ventanas</span>
-                </div>
-                <div class="help-item">
-                    <span class="help-emoji">🏆</span>
-                    <span>Desbloquea logros cultivando más flores</span>
                 </div>
             </div>
         </div>
@@ -180,9 +192,9 @@
                     <p>Cada flor que cultives tendrá un <strong>mensaje especial y único</strong>.</p>
                     <p>Solo tienes que <strong>hacer clic en la flor</strong> para leer lo que tiene que decirte.</p>
                     <div class="tutorial-features">
-                        <div class="feature">🏆 <span>Desbloquea logros</span></div>
-                        <div class="feature">🎨 <span>Cambia temas y estaciones</span></div>
-                        <div class="feature">🎵 <span>Efectos de sonido mágicos</span></div>
+                        <div class="feature">� <span>Cambia temas y estaciones</span></div>
+                        <div class="feature">� <span>Efectos de sonido mágicos</span></div>
+                        <div class="feature">💌 <span>Cartas de amor desbloqueables</span></div>
                     </div>
                 </div>
                 <div class="tutorial-actions">
@@ -224,12 +236,109 @@
         </div>
     </div>
     
+    <!-- Modal de confirmación para reiniciar -->
+    <div id="confirmResetModal" class="modal hidden">
+        <div class="modal-content confirmation-modal">
+            <div class="modal-header">
+                <h2>🔄 Reiniciar Jardín</h2>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-icon">⚠️</div>
+                <p class="confirmation-message">¿Estás seguro de que quieres reiniciar el jardín?</p>
+                <p class="confirmation-warning">Se perderán todas las flores cultivadas y el progreso actual.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelReset" class="btn-secondary">Cancelar</button>
+                <button id="confirmReset" class="btn-danger">Sí, Reiniciar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Reproductor de Música -->
+    <div id="musicPlayerModal" class="modal hidden">
+        <div class="modal-content music-player-modal">
+            <div class="modal-header">
+                <h2>🎵 Música Romántica</h2>
+                <button class="modal-close" id="closeMusicPlayer">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="music-player">
+                    <div class="album-cover">
+                        <div class="vinyl-disc" id="vinylDisc">
+                            <div class="vinyl-center">♪</div>
+                        </div>
+                    </div>
+                    <div class="song-info">
+                        <h3 id="currentSongTitle">Selecciona una canción</h3>
+                        <p id="currentArtist">Tu Playlist Romántica</p>
+                    </div>
+                    <div class="player-controls">
+                        <button class="player-btn" id="prevSong" title="Anterior">⏮️</button>
+                        <button class="player-btn play-pause" id="playPause" title="Reproducir">▶️</button>
+                        <button class="player-btn" id="nextSong" title="Siguiente">⏭️</button>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">0:00</span>
+                    </div>
+                    <div class="volume-control">
+                        <span>🔊</span>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <div class="playlist">
+                    <h4>🎼 Playlist</h4>
+                    <div id="playlistItems"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Cartas de Amor -->
+    <div id="loveLettersModal" class="modal hidden">
+        <div class="modal-content love-letters-modal">
+            <div class="modal-header">
+                <h2>💌 Cartas de Amor</h2>
+                <button class="modal-close" id="closeLetters">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="letters-intro">Desbloquea cartas especiales cultivando flores en el jardín 🌸</p>
+                <div class="letters-grid" id="lettersGrid">
+                    <!-- Las cartas se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Leer Carta -->
+    <div id="readLetterModal" class="modal hidden">
+        <div class="modal-content read-letter-modal">
+            <button class="modal-close" id="closeReadLetter">&times;</button>
+            <div class="letter-envelope">
+                <div class="letter-paper">
+                    <div class="letter-header">
+                        <span class="letter-date" id="letterDate"></span>
+                    </div>
+                    <div class="letter-content" id="letterContent"></div>
+                    <div class="letter-signature">
+                        <p>Con todo mi amor,</p>
+                        <p class="signature">Dario 💕</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Scripts de la aplicación -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/effects.js"></script>
     <script src="js/flower.js"></script>
     <script src="js/garden.js"></script>
+    <script src="js/music-and-letters.js"></script>
     
     <!-- Script de inicialización -->
     <script>
@@ -253,6 +362,10 @@
             
             // Inicializar el jardín principal
             garden = new GardenManager();
+            
+            // Inicializar nuevos sistemas
+            musicPlayer = new MusicPlayer();
+            loveLettersSystem = new LoveLettersSystem();
             
             // Configurar controles
             setupControls();
@@ -291,11 +404,9 @@
         }
         
         function hideNonEssentialElements() {
-            // Ocultar estadísticas, controles y logros durante el tutorial
+            // Ocultar estadísticas y controles durante el tutorial
             document.getElementById('gardenStats').classList.add('hidden');
             document.getElementById('controls-panel').classList.add('hidden');
-            const achievementsPanel = document.getElementById('achievements');
-            if (achievementsPanel) achievementsPanel.classList.add('hidden');
         }
         
         function showAllElements() {
@@ -309,14 +420,6 @@
                 document.getElementById('controls-panel').classList.remove('hidden');
                 document.getElementById('controls-panel').classList.add('slide-in-left');
             }, 600);
-            
-            const achievementsPanel = document.getElementById('achievements');
-            if (achievementsPanel) {
-                setTimeout(() => {
-                    achievementsPanel.classList.remove('hidden');
-                    achievementsPanel.classList.add('slide-in-right');
-                }, 900);
-            }
         }
         
         function showDelayedElements() {
@@ -444,10 +547,7 @@
             
             // Control de reinicio jardín (para móviles)
             document.getElementById('resetGarden').addEventListener('click', () => {
-                if (confirm('¿Estás seguro de que quieres reiniciar el jardín? Se perderán todas las flores.')) {
-                    garden.resetGarden();
-                    garden.showNotification('Jardín reiniciado 🌱', 'info');
-                }
+                garden.resetGarden();
             });
             
             // Botón de ayuda flotante
@@ -599,37 +699,60 @@
             }
         };
         
-        // Prevenir zoom accidental en móviles y mejorar iOS Safari
+        // ===== OPTIMIZACIONES MÓVILES MEJORADAS =====
+        
+        // Prevenir zoom accidental en móviles
         document.addEventListener('gesturestart', function (e) {
             e.preventDefault();
-        });
+        }, { passive: false });
         
-        // Prevenir comportamientos problemáticos en iOS
-        document.addEventListener('touchstart', function() {}, { passive: true });
+        document.addEventListener('gesturechange', function (e) {
+            e.preventDefault();
+        }, { passive: false });
         
-        // Mejorar experiencia táctil en móviles (especialmente iOS)
+        document.addEventListener('gestureend', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+        
+        // Detectar tipo de dispositivo
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+        
+        if (isMobile) {
+            document.body.classList.add('is-mobile');
+        }
+        if (isIOS) {
+            document.body.classList.add('is-ios');
+        }
+        if (isAndroid) {
+            document.body.classList.add('is-android');
+        }
+        
+        // Mejorar experiencia táctil en móviles
         let touchStartY = 0;
         let touchStartX = 0;
+        let touchStartTime = 0;
         
         document.addEventListener('touchstart', function(e) {
             touchStartY = e.touches[0].clientY;
             touchStartX = e.touches[0].clientX;
+            touchStartTime = Date.now();
         }, { passive: true });
         
         document.addEventListener('touchmove', function(e) {
-            // Prevenir el bounce de iOS Safari
-            if (e.target === document.body || e.target === document.documentElement) {
-                e.preventDefault();
-            }
+            // Prevenir el bounce de iOS Safari solo en elementos específicos
+            const target = e.target;
+            const isScrollable = target.classList.contains('tutorial-content') || 
+                                target.classList.contains('quick-help-content') ||
+                                target.classList.contains('modal-body') ||
+                                target.classList.contains('playlist') ||
+                                target.closest('.tutorial-content') ||
+                                target.closest('.quick-help-content') ||
+                                target.closest('.modal-body') ||
+                                target.closest('.playlist');
             
-            const touchY = e.touches[0].clientY;
-            const touchDiff = touchStartY - touchY;
-            
-            // Prevenir scroll del body solo en ciertas condiciones
-            const tutorialActive = document.querySelector('.welcome-tutorial.active');
-            const helpPanelActive = document.querySelector('.quick-help-panel:not(.hidden)');
-            
-            if (tutorialActive || helpPanelActive) {
+            if (!isScrollable) {
                 e.preventDefault();
             }
         }, { passive: false });
@@ -640,7 +763,68 @@
             if (inputElements.includes(e.target.tagName)) {
                 e.target.style.fontSize = '16px';
             }
-        });
+            
+            // Prevenir doble tap zoom
+            const touchEndTime = Date.now();
+            const touchDuration = touchEndTime - touchStartTime;
+            if (touchDuration < 200) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Fix específico para Android Chrome - ajustar viewport cuando aparece el teclado
+        if (isAndroid) {
+            const viewport = document.querySelector('meta[name=viewport]');
+            window.addEventListener('resize', function() {
+                if (document.activeElement.tagName === 'INPUT' || 
+                    document.activeElement.tagName === 'TEXTAREA') {
+                    viewport.setAttribute('content', 
+                        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                }
+            });
+        }
+        
+        // Fix para altura de viewport en iOS
+        if (isIOS) {
+            const setViewportHeight = () => {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            };
+            
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+            window.addEventListener('orientationchange', setViewportHeight);
+        }
+        
+        // Detectar orientación y ajustar interfaz
+        function handleOrientationChange() {
+            const isLandscape = window.matchMedia('(orientation: landscape)').matches;
+            const isMobileDevice = window.matchMedia('(max-width: 768px)').matches;
+            
+            if (isMobileDevice && isLandscape) {
+                // Ajustes específicos para móvil horizontal
+                document.body.classList.add('mobile-landscape');
+            } else {
+                document.body.classList.remove('mobile-landscape');
+            }
+        }
+        
+        // Escuchar cambios de orientación
+        window.addEventListener('orientationchange', handleOrientationChange);
+        window.addEventListener('resize', handleOrientationChange);
+        handleOrientationChange(); // Ejecutar al cargar
+        
+        // Mejorar rendimiento de scroll en móviles
+        let ticking = false;
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    // Aquí puedes agregar lógica para efectos de scroll
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
         
         // PWA: Service Worker (futuro)
         if ('serviceWorker' in navigator) {
@@ -651,30 +835,10 @@
             });
         }
         
-        // Agregar soporte para efectos de logros mejorados
-        window.triggerSpecialEffect = function(type) {
-            if (garden && garden.effectsManager) {
-                switch(type) {
-                    case 'achievement':
-                        garden.effectsManager.createAchievementEffect();
-                        break;
-                    case 'celebration':
-                        // Efecto especial de celebración
-                        for (let i = 0; i < 5; i++) {
-                            setTimeout(() => {
-                                garden.effectsManager.createFallingPetal();
-                            }, i * 200);
-                        }
-                        break;
-                }
-            }
-        };
-        
         // Debug: función para testing
         window.debugGarden = function() {
             console.log('🌸 Estado del Jardín:');
             console.log('- Flores:', garden.flowerCount);
-            console.log('- Logros:', Array.from(garden.achievements));
             console.log('- Estación:', garden.currentSeason);
             console.log('- Tutorial completado:', hasCompletedTutorial);
         };

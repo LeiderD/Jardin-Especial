@@ -103,19 +103,41 @@ class Flower {
     }
 
     setupEventListeners() {
-        this.element.addEventListener('click', (e) => {
+        // Manejar clicks y toques
+        const handleInteraction = (e) => {
             e.stopPropagation();
+            e.preventDefault(); // Prevenir comportamiento por defecto en móviles
             this.handleClick(e);
-        });
+        };
+        
+        // Click para desktop
+        this.element.addEventListener('click', handleInteraction);
+        
+        // Touch para móviles (más preciso que click en dispositivos táctiles)
+        this.element.addEventListener('touchend', handleInteraction, { passive: false });
 
-        this.element.addEventListener('mouseenter', () => {
-            this.element.style.transform = 'scale(1.1) rotate(5deg)';
-            this.createHoverEffect();
-        });
+        // Efectos hover solo en dispositivos con mouse
+        if (window.matchMedia('(hover: hover)').matches) {
+            this.element.addEventListener('mouseenter', () => {
+                this.element.style.transform = 'scale(1.1) rotate(5deg)';
+                this.createHoverEffect();
+            });
 
-        this.element.addEventListener('mouseleave', () => {
-            this.element.style.transform = 'scale(1) rotate(0deg)';
-        });
+            this.element.addEventListener('mouseleave', () => {
+                this.element.style.transform = 'scale(1) rotate(0deg)';
+            });
+        } else {
+            // En dispositivos táctiles, agregar efecto de toque
+            this.element.addEventListener('touchstart', () => {
+                this.element.style.transform = 'scale(1.05)';
+            }, { passive: true });
+            
+            this.element.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    this.element.style.transform = 'scale(1)';
+                }, 200);
+            }, { passive: true });
+        }
     }
 
     handleClick(e) {
