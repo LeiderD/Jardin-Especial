@@ -368,10 +368,14 @@
     }
     
     .help-float-btn {
-        width: 55px;
-        height: 55px;
+        width: 50px;
+        height: 50px;
         bottom: 15px;
         right: 15px;
+        font-size: 1.3em;
+        /* Asegurar que sea clicable pero no interfiera */
+        pointer-events: auto;
+        z-index: 100;
     }
     
     .demo-garden {
@@ -631,6 +635,8 @@
     flex-direction: column;
     gap: 10px;
     z-index: 60;
+    /* Asegurar que sea interactivo */
+    pointer-events: auto;
 }
 
 .control-btn {
@@ -648,6 +654,12 @@
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-light);
+    /* Soporte táctil mejorado */
+    pointer-events: auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(255, 107, 157, 0.2);
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .control-btn:hover {
@@ -656,8 +668,11 @@
     box-shadow: var(--shadow-heavy);
 }
 
-.control-btn:active {
+/* Estado activo para touch */
+.control-btn:active,
+.control-btn.active {
     transform: scale(0.95);
+    background: rgba(255, 107, 157, 0.3);
 }
 
 /* Estadísticas del jardín */
@@ -930,6 +945,21 @@
         width: 45px;
         height: 45px;
         font-size: 1.1em;
+        /* Asegurar que los botones sean interactivos en móvil */
+        pointer-events: auto;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+        user-select: none;
+        -webkit-user-select: none;
+    }
+    
+    /* Asegurar que el panel de controles sea interactivo */
+    .controls-panel {
+        pointer-events: auto;
+    }
+    
+    .controls-panel button {
+        pointer-events: auto;
     }
     
     .form-actions {

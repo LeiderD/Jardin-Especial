@@ -157,6 +157,14 @@ h1 {
     box-shadow: 0 15px 50px rgba(0,0,0,0.4);
 }
 
+/* Feedback táctil en móvil */
+@media (hover: none) and (pointer: coarse) {
+    .garden:active {
+        background: rgba(255, 255, 255, 0.08);
+        transform: scale(0.998) translateZ(0);
+    }
+}
+
 /* Sistema de flores mejorado para móviles */
 .flower {
     position: absolute;
@@ -887,7 +895,12 @@ input:focus, textarea:focus, select:focus {
     
     .garden {
         padding: 25px;
+        /* Padding extra en la parte inferior derecha para evitar conflictos con botón de ayuda */
+        padding-right: 110px;
+        padding-bottom: 130px;
         min-height: 350px;
+        /* Cursor pointer para indicar que es clicable */
+        cursor: pointer;
     }
     
     .season-indicator {
@@ -917,6 +930,9 @@ input:focus, textarea:focus, select:focus {
     
     .garden {
         padding: 20px;
+        /* Padding más pronunciado para pantallas muy pequeñas */
+        padding-right: 90px;
+        padding-bottom: 110px;
         min-height: 300px;
     }
     

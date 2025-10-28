@@ -102,6 +102,14 @@ class GardenManager {
     setupEventListeners() {
         // Soporte para eventos táctiles y de mouse
         const handleInteraction = (e) => {
+            // Si el objetivo es un botón o control, no prevenir el comportamiento por defecto
+            if (e.target.classList.contains('player-btn') || 
+                e.target.classList.contains('control-btn') || 
+                e.target.classList.contains('help-float-btn') ||
+                e.target.classList.contains('volume-control')) {
+                return;
+            }
+            
             if (e.target === this.garden || e.target.classList.contains('instruction')) {
                 e.preventDefault(); // Prevenir comportamiento por defecto en móviles
                 
@@ -118,13 +126,23 @@ class GardenManager {
                     y = e.clientY - rect.top - 40;
                 }
                 
-                if (x > 20 && x < rect.width - 40 && y > 20 && y < rect.height - 60) {
+                // Márgenes de seguridad más amplios en móviles
+                const isMobile = window.innerWidth <= 768;
+                const leftMargin = 20;
+                const topMargin = 20;
+                // En móvil: más margen derecho (100px) e inferior (120px) para evitar botones flotantes
+                const rightMargin = isMobile ? 100 : 40;
+                const bottomMargin = isMobile ? 120 : 60;
+                
+                if (x > leftMargin && 
+                    x < rect.width - rightMargin && 
+                    y > topMargin && 
+                    y < rect.height - bottomMargin) {
                     this.createFlower(x, y);
                     
                     const instruction = this.garden.querySelector('.instruction');
                     // En móviles, ocultar siempre las instrucciones al crear flor
                     // En desktop, solo ocultar en la primera flor
-                    const isMobile = window.innerWidth <= 768;
                     if (instruction && (isMobile || this.flowerCount === 1)) {
                         instruction.style.display = 'none';
                         

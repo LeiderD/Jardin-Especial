@@ -520,15 +520,27 @@
         }
         
         function setupControls() {
+            // Función helper para añadir eventos táctiles y click
+            const addInteractionEvent = (elementId, callback) => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.addEventListener('click', callback);
+                    element.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        callback(e);
+                    }, { passive: false });
+                }
+            };
+            
             // Control de sonido
-            document.getElementById('soundToggle').addEventListener('click', () => {
+            addInteractionEvent('soundToggle', () => {
                 const enabled = garden.soundManager.toggle();
                 document.getElementById('soundToggle').textContent = enabled ? '🔊' : '🔇';
                 garden.showNotification(enabled ? 'Sonidos activados 🎵' : 'Sonidos desactivados 🔇');
             });
             
             // Control de tema
-            document.getElementById('themeToggle').addEventListener('click', () => {
+            addInteractionEvent('themeToggle', () => {
                 const themes = themeManager.getAvailableThemes();
                 const currentIndex = themes.findIndex(t => t.key === themeManager.currentTheme);
                 const nextTheme = themes[(currentIndex + 1) % themes.length];
@@ -537,7 +549,7 @@
             });
             
             // Control de pantalla completa
-            document.getElementById('fullscreenToggle').addEventListener('click', () => {
+            addInteractionEvent('fullscreenToggle', () => {
                 if (!document.fullscreenElement) {
                     document.documentElement.requestFullscreen();
                 } else {
@@ -546,19 +558,24 @@
             });
             
             // Control de reinicio jardín (para móviles)
-            document.getElementById('resetGarden').addEventListener('click', () => {
+            addInteractionEvent('resetGarden', () => {
                 garden.resetGarden();
             });
             
             // Botón de ayuda flotante
-            document.getElementById('helpButton').addEventListener('click', () => {
+            addInteractionEvent('helpButton', () => {
                 toggleQuickHelp();
             });
             
             // Cerrar panel de ayuda
-            document.querySelector('.quick-help-close').addEventListener('click', () => {
-                hideQuickHelp();
-            });
+            const closeBtn = document.querySelector('.quick-help-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => hideQuickHelp());
+                closeBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    hideQuickHelp();
+                }, { passive: false });
+            }
         }
         
         function toggleQuickHelp() {
@@ -701,16 +718,37 @@
         
         // ===== OPTIMIZACIONES MÓVILES MEJORADAS =====
         
-        // Prevenir zoom accidental en móviles
+        // Prevenir zoom accidental en móviles (pero no en botones)
         document.addEventListener('gesturestart', function (e) {
+            // No prevenir en botones y controles
+            if (e.target.classList.contains('control-btn') || 
+                e.target.classList.contains('player-btn') ||
+                e.target.closest('.controls-panel') ||
+                e.target.closest('.player-controls')) {
+                return;
+            }
             e.preventDefault();
         }, { passive: false });
         
         document.addEventListener('gesturechange', function (e) {
+            // No prevenir en botones y controles
+            if (e.target.classList.contains('control-btn') || 
+                e.target.classList.contains('player-btn') ||
+                e.target.closest('.controls-panel') ||
+                e.target.closest('.player-controls')) {
+                return;
+            }
             e.preventDefault();
         }, { passive: false });
         
         document.addEventListener('gestureend', function (e) {
+            // No prevenir en botones y controles
+            if (e.target.classList.contains('control-btn') || 
+                e.target.classList.contains('player-btn') ||
+                e.target.closest('.controls-panel') ||
+                e.target.closest('.player-controls')) {
+                return;
+            }
             e.preventDefault();
         }, { passive: false });
         
@@ -743,6 +781,15 @@
         document.addEventListener('touchmove', function(e) {
             // Prevenir el bounce de iOS Safari solo en elementos específicos
             const target = e.target;
+            
+            // NO prevenir en botones y controles
+            if (target.classList.contains('control-btn') || 
+                target.classList.contains('player-btn') ||
+                target.closest('.controls-panel') ||
+                target.closest('.player-controls')) {
+                return; // Dejar que los eventos funcionen normalmente
+            }
+            
             const isScrollable = target.classList.contains('tutorial-content') || 
                                 target.classList.contains('quick-help-content') ||
                                 target.classList.contains('modal-body') ||
@@ -759,12 +806,21 @@
         
         // Fix para iOS Safari - prevenir zoom en inputs
         document.addEventListener('touchend', function(e) {
+            // NO interferir con botones y controles
+            if (e.target.classList.contains('control-btn') || 
+                e.target.classList.contains('player-btn') ||
+                e.target.closest('.controls-panel') ||
+                e.target.closest('.player-controls') ||
+                e.target.tagName === 'BUTTON') {
+                return; // Dejar que los botones funcionen normalmente
+            }
+            
             const inputElements = ['INPUT', 'TEXTAREA', 'SELECT'];
             if (inputElements.includes(e.target.tagName)) {
                 e.target.style.fontSize = '16px';
             }
             
-            // Prevenir doble tap zoom
+            // Prevenir doble tap zoom solo en elementos no interactivos
             const touchEndTime = Date.now();
             const touchDuration = touchEndTime - touchStartTime;
             if (touchDuration < 200) {
@@ -826,12 +882,12 @@
             }
         }, { passive: true });
         
-        // PWA: Service Worker (futuro)
+        // PWA: Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('SW registrado'))
-                    .catch(error => console.log('Error al registrar SW'));
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => console.log('Service Worker registrado correctamente'))
+                    .catch(error => console.log('Error al registrar Service Worker:', error));
             });
         }
         
