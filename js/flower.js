@@ -150,39 +150,49 @@ class Flower {
     showMessage() {
         const existing = document.querySelector('.message-box');
         if (existing) existing.remove();
+        
+        const existingBadge = document.querySelector('.flower-badge');
+        if (existingBadge) existingBadge.remove();
 
         const messageBox = document.createElement('div');
         messageBox.className = 'message-box';
         messageBox.innerHTML = `
-            <div class="message-header">
-                <span class="flower-type">${this.type.charAt(0).toUpperCase() + this.type.slice(1)} ${this.getFlowerEmoji()}</span>
-                <span class="close-btn" role="button" aria-label="Cerrar mensaje" tabindex="0">×</span>
-            </div>
             <p class="message-text">${this.message}</p>
             <div class="message-footer">
                 <button class="share-btn" data-message="${this.message.replace(/'/g, '&apos;')}">Compartir 💕</button>
                 <button class="favorite-btn" data-message="${this.message.replace(/'/g, '&apos;')}">❤️</button>
             </div>
+            <button class="close-btn-bottom" role="button" aria-label="Cerrar mensaje" tabindex="0">
+                <span>×</span>
+            </button>
         `;
         
+        // Añadir badge de flor fuera del cuadro
+        const flowerBadge = document.createElement('div');
+        flowerBadge.className = 'flower-badge';
+        flowerBadge.innerHTML = `<span>${this.type.charAt(0).toUpperCase() + this.type.slice(1)} ${this.getFlowerEmoji()}</span>`;
+        
+        garden.garden.appendChild(flowerBadge);
         garden.garden.appendChild(messageBox);
         
         // Configurar event listeners para los botones
-        const closeBtn = messageBox.querySelector('.close-btn');
+        const closeBtn = messageBox.querySelector('.close-btn-bottom');
         const shareBtn = messageBox.querySelector('.share-btn');
         const favoriteBtn = messageBox.querySelector('.favorite-btn');
         
-        // Cerrar al hacer click en X
+        // Cerrar al hacer click en botón de cerrar
         closeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             messageBox.remove();
+            flowerBadge.remove();
         });
         
-        // También cerrar con Enter/Space en el botón de cerrar
+        // También cerrar con Enter/Space
         closeBtn.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 messageBox.remove();
+                flowerBadge.remove();
             }
         });
         
@@ -198,6 +208,9 @@ class Flower {
         setTimeout(() => {
             if (messageBox.parentElement) {
                 messageBox.remove();
+            }
+            if (flowerBadge.parentElement) {
+                flowerBadge.remove();
             }
         }, 8000);
     }

@@ -402,61 +402,84 @@ h1 {
     border: 1px solid rgba(255,255,255,0.3);
 }
 
+/* Badge de flor flotante encima del modal */
+.flower-badge {
+    position: absolute;
+    top: calc(50% - 230px); /* Encima del modal */
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: linear-gradient(135deg, #ff6b9d 0%, #c084fc 100%);
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+    z-index: 101;
+    animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+    animation-delay: 0.1s;
+}
+
+.flower-badge span {
+    color: white;
+    font-weight: 700;
+    font-size: 1.1em;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
 .message-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    padding-right: 5px;
     border-bottom: 2px solid rgba(255, 107, 157, 0.3);
-    gap: 10px;
 }
 
 .flower-type {
     font-weight: 700;
     color: var(--accent-color);
     font-size: 1.1em;
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    text-align: center;
 }
 
-.close-btn {
-    background: rgba(0, 0, 0, 0.05);
-    border: none;
-    font-size: 2em;
+/* Botón de cerrar movido a la parte inferior */
+.close-btn-bottom {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(255, 107, 157, 0.3));
+    border: 2px solid rgba(255, 107, 157, 0.4);
+    border-radius: 12px;
+    color: #333;
+    font-size: 2em; /* X más grande */
+    font-weight: 600;
     cursor: pointer;
-    color: #666;
-    width: 35px;
-    height: 35px;
-    min-width: 35px;
-    min-height: 35px;
-    border-radius: 50%;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    line-height: 1;
-    padding: 0;
-    flex-shrink: 0;
-    /* Táctil mejorado */
+    gap: 5px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    line-height: 1;
 }
 
-.close-btn:hover {
-    background: rgba(255, 107, 157, 0.2);
-    color: #333;
-    transform: scale(1.15) rotate(90deg);
+.close-btn-bottom:hover {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(255, 107, 157, 0.4));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.3);
 }
 
-.close-btn:active {
-    transform: scale(0.95);
-    background: rgba(255, 107, 157, 0.3);
+.close-btn-bottom:active {
+    transform: translateY(0);
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.4), rgba(255, 107, 157, 0.5));
 }
+
+.close-btn-bottom span {
+    font-size: 1.5em; /* X gigante */
+    line-height: 1;
+}
+
+/* Estilos del botón antiguo removidos - ahora se usa .close-btn-bottom */
 
 @keyframes popIn {
     0% { 
@@ -1018,25 +1041,34 @@ input:focus, textarea:focus, select:focus {
         margin: 15px auto;
     }
     
+    .flower-badge {
+        top: calc(50% - 180px); /* Ajustar posición para móvil */
+        padding: 8px 16px;
+        border-radius: 15px;
+    }
+    
+    .flower-badge span {
+        font-size: 0.95em;
+    }
+    
     .message-header {
-        gap: 8px;
-        padding-right: 0;
         margin-bottom: 12px;
+        padding-bottom: 8px;
     }
     
     .flower-type {
-        font-size: 0.95em;
-        padding-right: 5px;
+        font-size: 1em;
     }
     
-    .close-btn {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
-        font-size: 2.2em !important;
-        background: rgba(255, 107, 157, 0.15) !important;
-        flex-shrink: 0 !important;
+    .close-btn-bottom {
+        margin-top: 12px;
+        padding: 14px 20px;
+        font-size: 1.8em;
+        min-height: 48px; /* Área táctil recomendada */
+    }
+    
+    .close-btn-bottom span {
+        font-size: 1.6em;
     }
     
     .message-text {
