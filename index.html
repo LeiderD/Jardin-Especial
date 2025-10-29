@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
     
+    <!-- Optimización de carga -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    
     <!-- iOS Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -38,11 +42,13 @@
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>🌸</text></svg>">
     
-    <!-- Estilos CSS -->
+    <!-- Estilos CSS - preload críticos -->
+    <link rel="preload" href="css/styles-advanced.css" as="style">
+    <link rel="preload" href="css/components.css" as="style">
     <link rel="stylesheet" href="css/styles-advanced.css">
     <link rel="stylesheet" href="css/components.css">
     
-    <!-- Preload de assets importantes -->
+    <!-- Preload de scripts críticos -->
     <link rel="preload" href="js/config.js" as="script">
     <link rel="preload" href="js/garden.js" as="script">
 </head>
@@ -84,10 +90,11 @@
     </div>
     
     <!-- Panel de controles (se crea dinámicamente) -->
-    <div id="controls-panel" class="controls-panel hidden">
+    <div id="controls-panel" class="controls-panel">
         <button id="soundToggle" class="control-btn" title="Activar/Desactivar sonidos">🔊</button>
         <button id="musicToggle" class="control-btn" title="Música de fondo">🎵</button>
         <button id="lettersToggle" class="control-btn" title="Cartas de amor">💌</button>
+        <button id="seasonToggle" class="control-btn" title="Cambiar estación">🌸</button>
         <button id="themeToggle" class="control-btn" title="Cambiar tema">🎨</button>
         <button id="resetGarden" class="control-btn mobile-only" title="Reiniciar jardín">🔄</button>
         <button id="fullscreenToggle" class="control-btn" title="Pantalla completa">⛶</button>
@@ -333,15 +340,15 @@
     </div>
     
     <!-- Scripts de la aplicación -->
-    <script src="js/config.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/effects.js"></script>
-    <script src="js/flower.js"></script>
-    <script src="js/garden.js"></script>
-    <script src="js/music-and-letters.js"></script>
+    <script src="js/config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/effects.js" defer></script>
+    <script src="js/flower.js" defer></script>
+    <script src="js/garden.js" defer></script>
+    <script src="js/music-and-letters.js" defer></script>
     
     <!-- Script de inicialización -->
-    <script>
+    <script defer>
         // Variables globales
         let garden;
         let themeManager;
@@ -349,6 +356,18 @@
         let tutorialStep = 1;
         let hasCompletedTutorial = false;
         let isFirstFlower = true;
+        
+        // Detectar dispositivo y sistema operativo
+        const isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+        const isLowEndDevice = isMobile && navigator.hardwareConcurrency <= 4;
+        
+        // Reducir animaciones en dispositivos de bajo rendimiento
+        if (isLowEndDevice) {
+            document.documentElement.style.setProperty('--animation-speed', '0.5');
+            document.documentElement.classList.add('reduce-motion');
+        }
         
         // Inicialización cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
@@ -363,9 +382,16 @@
             // Inicializar el jardín principal
             garden = new GardenManager();
             
-            // Inicializar nuevos sistemas
-            musicPlayer = new MusicPlayer();
-            loveLettersSystem = new LoveLettersSystem();
+            // Inicializar nuevos sistemas (con delay en móvil)
+            if (isMobile) {
+                setTimeout(() => {
+                    musicPlayer = new MusicPlayer();
+                    loveLettersSystem = new LoveLettersSystem();
+                }, 500);
+            } else {
+                musicPlayer = new MusicPlayer();
+                loveLettersSystem = new LoveLettersSystem();
+            }
             
             // Configurar controles
             setupControls();
@@ -546,6 +572,18 @@
                 const nextTheme = themes[(currentIndex + 1) % themes.length];
                 themeManager.setTheme(nextTheme.key);
                 garden.showNotification(`Tema cambiado a: ${nextTheme.name} ✨`);
+            });
+            
+            // Control de cambio de estación
+            addInteractionEvent('seasonToggle', () => {
+                garden.changeSeason();
+                const seasonNames = {
+                    spring: 'Primavera 🌸',
+                    summer: 'Verano ☀️',
+                    autumn: 'Otoño 🍂',
+                    winter: 'Invierno ❄️'
+                };
+                garden.showNotification(`Estación: ${seasonNames[garden.currentSeason]}`);
             });
             
             // Control de pantalla completa
@@ -753,9 +791,8 @@
         }, { passive: false });
         
         // Detectar tipo de dispositivo
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isAndroid = /Android/.test(navigator.userAgent);
+        // Variables ya definidas arriba globalmente
+        // const isMobile, isIOS, isAndroid ya existen
         
         if (isMobile) {
             document.body.classList.add('is-mobile');

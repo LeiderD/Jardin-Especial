@@ -23,6 +23,11 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+    // Solo cachear peticiones HTTP/HTTPS, ignorar chrome-extension: y otros esquemas
+    if (!event.request.url.startsWith('http')) {
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request)
             .then(response => {

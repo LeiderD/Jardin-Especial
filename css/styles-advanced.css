@@ -12,6 +12,16 @@
     --safe-area-inset-bottom: env(safe-area-inset-bottom);
     --safe-area-inset-left: env(safe-area-inset-left);
     --safe-area-inset-right: env(safe-area-inset-right);
+    --animation-speed: 1;
+}
+
+/* Reducir animaciones en dispositivos de bajo rendimiento */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+    animation-duration: calc(0.01ms * var(--animation-speed)) !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: calc(0.01ms * var(--animation-speed)) !important;
 }
 
 * {
@@ -104,6 +114,7 @@ body {
     max-width: 95vw;
     width: 100%;
     padding: 10px;
+    padding-bottom: 80px; /* Espacio para el footer navbar */
     position: relative;
     margin: 0 auto;
 }
@@ -159,9 +170,23 @@ h1 {
 
 /* Feedback táctil en móvil */
 @media (hover: none) and (pointer: coarse) {
+    .garden {
+        /* Jardín pantalla completa en móvil */
+        border: none;
+        box-shadow: none;
+        background: linear-gradient(135deg, 
+            rgba(138, 43, 226, 0.15) 0%, 
+            rgba(74, 0, 224, 0.1) 50%, 
+            rgba(142, 45, 226, 0.15) 100%);
+        backdrop-filter: blur(10px);
+    }
+    
     .garden:active {
-        background: rgba(255, 255, 255, 0.08);
-        transform: scale(0.998) translateZ(0);
+        background: linear-gradient(135deg, 
+            rgba(138, 43, 226, 0.2) 0%, 
+            rgba(74, 0, 224, 0.15) 50%, 
+            rgba(142, 45, 226, 0.2) 100%);
+        transform: scale(0.999) translateZ(0);
     }
 }
 
@@ -383,34 +408,54 @@ h1 {
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 2px solid rgba(var(--accent-color), 0.3);
+    padding-right: 5px;
+    border-bottom: 2px solid rgba(255, 107, 157, 0.3);
+    gap: 10px;
 }
 
 .flower-type {
     font-weight: 700;
     color: var(--accent-color);
     font-size: 1.1em;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .close-btn {
-    background: none;
+    background: rgba(0, 0, 0, 0.05);
     border: none;
-    font-size: 1.5em;
+    font-size: 2em;
     cursor: pointer;
-    color: #999;
-    width: 30px;
-    height: 30px;
+    color: #666;
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+    /* Táctil mejorado */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 .close-btn:hover {
-    background: rgba(0,0,0,0.1);
+    background: rgba(255, 107, 157, 0.2);
     color: #333;
-    transform: scale(1.1);
+    transform: scale(1.15) rotate(90deg);
+}
+
+.close-btn:active {
+    transform: scale(0.95);
+    background: rgba(255, 107, 157, 0.3);
 }
 
 @keyframes popIn {
@@ -547,12 +592,56 @@ h1 {
     bottom: 20px;
     right: 20px;
     padding: 15px 25px;
+    padding-right: 50px; /* Espacio para el botón de cerrar */
     border-radius: 15px;
     color: white;
     font-weight: 600;
     z-index: 150;
     animation: slideIn 0.5s ease-out;
     box-shadow: var(--shadow-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 400px;
+}
+
+.notification-message {
+    flex: 1;
+}
+
+.notification-close {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    line-height: 1;
+    padding: 0;
+    font-weight: bold;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.notification-close:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.notification-fade-out {
+    animation: fadeOut 0.3s ease-out forwards;
 }
 
 .notification-info {
@@ -575,6 +664,17 @@ h1 {
     to { 
         transform: translateX(0); 
         opacity: 1; 
+    }
+}
+
+@keyframes fadeOut {
+    from { 
+        opacity: 1; 
+        transform: translateX(0) scale(1); 
+    }
+    to { 
+        opacity: 0; 
+        transform: translateX(20px) scale(0.95); 
     }
 }
 
@@ -624,50 +724,8 @@ button, .btn, .control-btn, .tutorial-btn {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Botones de control específicos */
-.controls-panel {
-    position: fixed;
-    bottom: calc(20px + var(--safe-area-inset-bottom));
-    right: calc(20px + var(--safe-area-inset-right));
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 100;
-}
-
-.control-btn {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 2px solid var(--glass-border);
-    border-radius: 15px;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2em;
-    color: var(--text-color);
-    box-shadow: var(--shadow-light);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    /* Optimizaciones táctiles */
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    touch-action: manipulation;
-    user-select: none;
-    /* Área táctil mínima recomendada: 48x48px */
-    min-width: 48px;
-    min-height: 48px;
-    /* Mejorar rendimiento */
-    will-change: transform;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-}
-
-.control-btn:active {
-    transform: scale(0.95) translateZ(0);
-    background: rgba(255, 255, 255, 0.2);
-}
+/* ESTILOS DE CONTROLS-PANEL MOVIDOS A components.css - FOOTER UNIVERSAL */
+/* Los estilos base de .controls-panel y .control-btn ahora están en components.css */
 
 /* Botón solo para móviles */
 .mobile-only {
@@ -860,23 +918,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Landscape específico para móviles */
 @media screen and (max-height: 500px) and (orientation: landscape) {
-    /* Mantener navbar inferior en landscape */
-    .controls-panel {
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        flex-direction: row !important;
-        justify-content: space-around !important;
-        padding: 6px 0 !important;
-        padding-bottom: max(6px, env(safe-area-inset-bottom)) !important;
-    }
-    
-    .control-btn {
-        min-width: 50px !important;
-        padding: 6px !important;
-        font-size: 1.2em !important;
-    }
+    /* Estilos de navbar eliminados - ya están por defecto en components.css */
     
     .help-float-btn {
         top: calc(10px + var(--safe-area-inset-top));
@@ -911,61 +953,122 @@ input:focus, textarea:focus, select:focus {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* Ocultar elementos que ocupan espacio innecesario */
+    h1, .subtitle, .garden-stats, .season-indicator, .instruction {
+        display: none !important;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+    
     .container {
-        padding: 15px;
-        padding-bottom: 100px; /* Espacio para navbar inferior */
-        max-width: 95%;
+        padding: 0;
+        padding-bottom: 80px; /* Espacio para navbar inferior */
+        max-width: 100%;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
     
     .garden {
-        padding: 25px;
-        /* Ya no necesitamos tanto padding derecho/inferior porque los botones están en navbar */
-        padding-right: 90px; /* Solo para botón de ayuda */
-        padding-bottom: 25px; /* Reducido significativamente */
-        min-height: 350px;
-        /* Cursor pointer para indicar que es clicable */
+        padding: 10px;
+        /* Eliminar padding derecho ya que ocultamos el botón de ayuda en móvil */
+        padding-right: 10px;
+        padding-bottom: 10px;
+        min-height: calc(100vh - 80px); /* Pantalla completa menos navbar */
+        max-height: calc(100vh - 80px);
+        height: calc(100vh - 80px);
+        margin: 0;
+        border-radius: 0; /* Sin bordes redondeados en móvil */
         cursor: pointer;
+        flex: 1;
     }
     
-    .season-indicator {
-        flex-direction: column;
-        gap: 5px;
-        padding: 10px 15px;
+    /* Ocultar botón de ayuda flotante en móvil */
+    .help-float-btn {
+        display: none !important;
+    }
+    
+    /* Notificaciones más compactas */
+    .notification {
+        bottom: 85px !important; /* Sobre el navbar */
+        left: 10px;
+        right: 10px;
+        max-width: calc(100% - 20px);
+        padding: 12px 40px 12px 15px; /* Espacio para botón cerrar */
+        font-size: 0.9em;
+    }
+    
+    .notification-close {
+        width: 28px;
+        height: 28px;
+        font-size: 20px;
+        /* Área táctil mejorada para móvil */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
     
     .message-box {
-        max-width: 95%;
-        padding: 20px 25px;
+        max-width: 90%;
+        padding: 15px 15px;
+        margin: 15px auto;
+    }
+    
+    .message-header {
+        gap: 8px;
+        padding-right: 0;
+        margin-bottom: 12px;
+    }
+    
+    .flower-type {
+        font-size: 0.95em;
+        padding-right: 5px;
+    }
+    
+    .close-btn {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        font-size: 2.2em !important;
+        background: rgba(255, 107, 157, 0.15) !important;
+        flex-shrink: 0 !important;
     }
     
     .message-text {
-        font-size: 1.1em;
+        font-size: 1em;
     }
 }
 
 @media (max-width: 480px) {
-    h1 {
-        font-size: 1.8em;
-    }
-    
-    .subtitle {
-        font-size: 1em;
-    }
-    
+    /* Todo ya está oculto en el media query de 768px */
     .garden {
-        padding: 20px;
-        /* Reducido el padding ya que botones están en navbar */
-        padding-right: 80px; /* Solo para botón de ayuda */
-        padding-bottom: 20px;
-        min-height: 300px;
+        padding: 8px;
+        min-height: calc(100vh - 75px);
+        max-height: calc(100vh - 75px);
+        height: calc(100vh - 75px);
+        border-radius: 0;
     }
     
     .flower {
-        transform: scale(0.8);
+        transform: scale(0.9); /* Un poco más grandes */
     }
     
-    .flower:hover {
-        transform: scale(0.9) rotate(5deg);
+    .flower:hover, .flower:active {
+        transform: scale(1) rotate(5deg);
+    }
+    
+    .container {
+        padding-bottom: 75px;
+    }
+    
+    .notification {
+        bottom: 80px !important;
+        font-size: 0.85em;
     }
 }
 

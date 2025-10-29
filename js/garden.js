@@ -126,13 +126,13 @@ class GardenManager {
                     y = e.clientY - rect.top - 40;
                 }
                 
-                // Márgenes de seguridad más amplios en móviles
+                // Márgenes de seguridad en móviles
                 const isMobile = window.innerWidth <= 768;
-                const leftMargin = 20;
-                const topMargin = 20;
-                // En móvil: margen derecho para botón de ayuda, sin margen inferior porque botones están en navbar
-                const rightMargin = isMobile ? 90 : 40;
-                const bottomMargin = isMobile ? 30 : 60;
+                const leftMargin = isMobile ? 10 : 20;
+                const topMargin = isMobile ? 10 : 20;
+                // En móvil: margen mínimo ya que no hay botones laterales
+                const rightMargin = isMobile ? 10 : 40;
+                const bottomMargin = isMobile ? 10 : 60; // Mínimo porque el navbar está fijo
                 
                 if (x > leftMargin && 
                     x < rect.width - rightMargin && 
@@ -206,10 +206,38 @@ class GardenManager {
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        notification.textContent = message;
+        
+        // Crear contenedor para el mensaje y el botón de cerrar
+        const messageSpan = document.createElement('span');
+        messageSpan.className = 'notification-message';
+        messageSpan.textContent = message;
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'notification-close';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.setAttribute('aria-label', 'Cerrar notificación');
+        
+        // Añadir evento para cerrar manualmente
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notification.classList.add('notification-fade-out');
+            setTimeout(() => notification.remove(), 300);
+        });
+        
+        notification.appendChild(messageSpan);
+        notification.appendChild(closeBtn);
         document.body.appendChild(notification);
         
-        setTimeout(() => notification.remove(), 3000);
+        // Auto-cerrar después de 3 segundos
+        const autoCloseTimer = setTimeout(() => {
+            if (document.body.contains(notification)) {
+                notification.classList.add('notification-fade-out');
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 3000);
+        
+        // Limpiar timer si se cierra manualmente
+        notification.addEventListener('click', () => clearTimeout(autoCloseTimer));
     }
 
     createSeasonIndicator() {
@@ -224,9 +252,27 @@ class GardenManager {
 
     changeSeason() {
         const seasons = ['spring', 'summer', 'autumn', 'winter'];
+        const seasonIcons = {
+            spring: '🌸',
+            summer: '☀️',
+            autumn: '🍂',
+            winter: '❄️'
+        };
         const currentIndex = seasons.indexOf(this.currentSeason);
         this.currentSeason = seasons[(currentIndex + 1) % seasons.length];
-        document.querySelector('.season-indicator span').textContent = `Estación: ${this.currentSeason}`;
+        
+        // Actualizar indicador de estación
+        const seasonIndicator = document.querySelector('.season-indicator span');
+        if (seasonIndicator) {
+            seasonIndicator.textContent = `Estación: ${this.currentSeason}`;
+        }
+        
+        // Actualizar ícono del botón
+        const seasonBtn = document.getElementById('seasonToggle');
+        if (seasonBtn) {
+            seasonBtn.textContent = seasonIcons[this.currentSeason];
+        }
+        
         this.saveProgress();
     }
 

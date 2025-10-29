@@ -156,7 +156,7 @@ class Flower {
         messageBox.innerHTML = `
             <div class="message-header">
                 <span class="flower-type">${this.type.charAt(0).toUpperCase() + this.type.slice(1)} ${this.getFlowerEmoji()}</span>
-                <span class="close-btn" onclick="this.closest('.message-box').remove()">×</span>
+                <span class="close-btn" role="button" aria-label="Cerrar mensaje" tabindex="0">×</span>
             </div>
             <p class="message-text">${this.message}</p>
             <div class="message-footer">
@@ -168,8 +168,23 @@ class Flower {
         garden.garden.appendChild(messageBox);
         
         // Configurar event listeners para los botones
+        const closeBtn = messageBox.querySelector('.close-btn');
         const shareBtn = messageBox.querySelector('.share-btn');
         const favoriteBtn = messageBox.querySelector('.favorite-btn');
+        
+        // Cerrar al hacer click en X
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            messageBox.remove();
+        });
+        
+        // También cerrar con Enter/Space en el botón de cerrar
+        closeBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                messageBox.remove();
+            }
+        });
         
         shareBtn.addEventListener('click', () => {
             this.shareMessage(this.message);
