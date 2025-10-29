@@ -804,16 +804,26 @@ input:focus, textarea:focus, select:focus {
 
 /* Media queries específicas para móviles pequeños */
 @media screen and (max-width: 480px) {
+    /* Navbar inferior - no sobrescribir el estilo de components.css */
     .controls-panel {
-        bottom: calc(15px + var(--safe-area-inset-bottom));
-        right: calc(15px + var(--safe-area-inset-right));
-        gap: 8px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
     }
     
     .control-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1em;
+        width: auto !important;
+        height: auto !important;
+        min-width: 55px;
+        padding: 8px;
+        font-size: 1.3em;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
     
     .help-float-btn {
@@ -850,9 +860,22 @@ input:focus, textarea:focus, select:focus {
 
 /* Landscape específico para móviles */
 @media screen and (max-height: 500px) and (orientation: landscape) {
+    /* Mantener navbar inferior en landscape */
     .controls-panel {
-        right: calc(10px + var(--safe-area-inset-right));
-        bottom: calc(10px + var(--safe-area-inset-bottom));
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        padding: 6px 0 !important;
+        padding-bottom: max(6px, env(safe-area-inset-bottom)) !important;
+    }
+    
+    .control-btn {
+        min-width: 50px !important;
+        padding: 6px !important;
+        font-size: 1.2em !important;
     }
     
     .help-float-btn {
@@ -890,14 +913,15 @@ input:focus, textarea:focus, select:focus {
 @media (max-width: 768px) {
     .container {
         padding: 15px;
+        padding-bottom: 100px; /* Espacio para navbar inferior */
         max-width: 95%;
     }
     
     .garden {
         padding: 25px;
-        /* Padding extra en la parte inferior derecha para evitar conflictos con botón de ayuda */
-        padding-right: 110px;
-        padding-bottom: 130px;
+        /* Ya no necesitamos tanto padding derecho/inferior porque los botones están en navbar */
+        padding-right: 90px; /* Solo para botón de ayuda */
+        padding-bottom: 25px; /* Reducido significativamente */
         min-height: 350px;
         /* Cursor pointer para indicar que es clicable */
         cursor: pointer;
@@ -930,9 +954,9 @@ input:focus, textarea:focus, select:focus {
     
     .garden {
         padding: 20px;
-        /* Padding más pronunciado para pantallas muy pequeñas */
-        padding-right: 90px;
-        padding-bottom: 110px;
+        /* Reducido el padding ya que botones están en navbar */
+        padding-right: 80px; /* Solo para botón de ayuda */
+        padding-bottom: 20px;
         min-height: 300px;
     }
     
@@ -1028,12 +1052,17 @@ input:focus, textarea:focus, select:focus {
         font-size: 1.1em;
     }
     
-    /* Controles más accesibles */
+    /* Controles como navbar inferior */
     .controls-panel {
-        bottom: calc(15px + var(--safe-area-inset-bottom));
-        left: calc(15px + var(--safe-area-inset-left));
-        gap: 10px;
-        padding: 10px;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        gap: 5px !important;
+        padding: 10px 0 !important;
+        padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
     }
     
     /* Message box optimizado */
@@ -1288,10 +1317,21 @@ button:active,
         max-height: 60vh;
     }
     
+    .controls-panel {
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+    }
+    
     .control-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 1.1em;
+        width: auto !important;
+        min-width: 50px !important;
+        height: auto !important;
+        padding: 8px !important;
+        font-size: 1.2em !important;
     }
     
     h1 {
@@ -1303,7 +1343,7 @@ button:active,
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
     body {
         padding-top: max(20px, env(safe-area-inset-top));
-        padding-bottom: max(20px, env(safe-area-inset-bottom));
+        padding-bottom: 0; /* El navbar maneja el safe area */
     }
     
     .garden {
@@ -1312,7 +1352,20 @@ button:active,
     }
     
     .controls-panel {
-        bottom: calc(25px + env(safe-area-inset-bottom));
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    }
+    
+    .control-btn {
+        width: auto !important;
+        height: auto !important;
+        min-width: 55px !important;
+        padding: 8px !important;
     }
 }
 
@@ -1325,17 +1378,36 @@ button:active,
     .container {
         max-width: 98%;
     }
+    
+    .controls-panel {
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+    }
 }
 
 /* iPhone 12/13/14 (390x844) */
 @media only screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) {
     body {
         padding-top: max(20px, env(safe-area-inset-top));
-        padding-bottom: max(34px, env(safe-area-inset-bottom));
+        padding-bottom: 0; /* El navbar maneja el safe area */
     }
     
     .garden {
         min-height: 60vh;
+    }
+    
+    .controls-panel {
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        padding-bottom: max(34px, env(safe-area-inset-bottom)) !important;
     }
 }
 
@@ -1343,6 +1415,16 @@ button:active,
 @media only screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) {
     .garden {
         min-height: 65vh;
+    }
+    
+    .controls-panel {
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
     }
     
     h1 {

@@ -637,6 +637,47 @@
     z-index: 60;
     /* Asegurar que sea interactivo */
     pointer-events: auto;
+    transition: all 0.3s ease;
+}
+
+/* Estilo navbar inferior para móviles */
+@media (max-width: 768px) {
+    .controls-panel {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 5px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.85));
+        backdrop-filter: blur(30px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.5);
+        /* Safe area para notch */
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+    
+    .control-btn {
+        width: auto;
+        height: auto;
+        min-width: 60px;
+        padding: 8px;
+        background: transparent;
+        backdrop-filter: none;
+        border: none;
+        border-radius: 8px;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 1.5em;
+        box-shadow: none;
+    }
+    
+    .control-btn:active {
+        background: rgba(255, 107, 157, 0.2);
+    }
 }
 
 .control-btn {
@@ -936,30 +977,13 @@
         padding: 20px;
     }
     
-    .controls-panel {
-        bottom: 15px;
-        left: 15px;
+    /* Ajustar contenedor principal para no quedar oculto por navbar */
+    .container {
+        padding-bottom: 90px; /* Espacio para el navbar inferior */
     }
     
-    .control-btn {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1em;
-        /* Asegurar que los botones sean interactivos en móvil */
-        pointer-events: auto;
-        touch-action: manipulation;
-        -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-        user-select: none;
-        -webkit-user-select: none;
-    }
-    
-    /* Asegurar que el panel de controles sea interactivo */
-    .controls-panel {
-        pointer-events: auto;
-    }
-    
-    .controls-panel button {
-        pointer-events: auto;
+    .garden {
+        margin-bottom: 20px;
     }
     
     .form-actions {

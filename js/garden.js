@@ -130,9 +130,9 @@ class GardenManager {
                 const isMobile = window.innerWidth <= 768;
                 const leftMargin = 20;
                 const topMargin = 20;
-                // En móvil: más margen derecho (100px) e inferior (120px) para evitar botones flotantes
-                const rightMargin = isMobile ? 100 : 40;
-                const bottomMargin = isMobile ? 120 : 60;
+                // En móvil: margen derecho para botón de ayuda, sin margen inferior porque botones están en navbar
+                const rightMargin = isMobile ? 90 : 40;
+                const bottomMargin = isMobile ? 30 : 60;
                 
                 if (x > leftMargin && 
                     x < rect.width - rightMargin && 
