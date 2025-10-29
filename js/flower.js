@@ -204,7 +204,7 @@ class Flower {
             this.toggleFavorite();
         });
         
-        // Auto-cerrar después de 8 segundos
+        // Auto-cerrar después de 4.8 segundos (reducido 40% desde 8s)
         setTimeout(() => {
             if (messageBox.parentElement) {
                 messageBox.remove();
@@ -212,7 +212,7 @@ class Flower {
             if (flowerBadge.parentElement) {
                 flowerBadge.remove();
             }
-        }, 8000);
+        }, 3800);
     }
 
     getFlowerEmoji() {
